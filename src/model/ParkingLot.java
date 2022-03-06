@@ -5,12 +5,12 @@ import java.util.ArrayList;
 
 public class ParkingLot {
 
-    private int floor;
+    private final int floor;
     private final int row;
     private final int col;
     private final ArrayList<ArrayList<Cell>> mat;
     private int vacancy;
-    private int inBetweenPathWidth;
+    private final int inBetweenPathWidth;
 
     public ParkingLot(int floor, int row, int col,int inBetweenPathWidth) {
         vacancy = row * col;
@@ -104,25 +104,38 @@ public class ParkingLot {
     }
 
     public int[] getNearestParkingPosition(int r, int c) {
-        int[] pos = new int[]{-1, -1};
-        if(isValidEmptyParkingPlace(r,c)) {
-            pos[0] = r;
-            pos[1] = c;
-            return pos;
-        }
-        int[] dir1 = {0,0,-1,1,-1,-1,1,1};
-        int[] dir2 = {-1,1,0,0,-1,1,-1,1};
-        for(int i = 0; i < 8; ++i) {
-            int r1 = r + dir1[i];
-            int c1 = c + dir2[i];
-            if(!isRowAndColumnInRange(r1,c1)) continue;
-            if(isValidEmptyParkingPlace(r1,c1)) {
-                pos[0] = r1;
-                pos[1] = c1;
-                return pos;
+        int[][] ans = new int[row][col];
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                ans[i][j] = Integer.MAX_VALUE;
             }
         }
-        return pos;
+
+        // For each cell
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                ans[i][j] = Math.abs(i - r) + Math.abs(j - c);
+            }
+        }
+
+        int ctr = 0;
+        while (true) {
+            boolean flag = false;
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < col; j++) {
+                    if(ans[i][j] == ctr) {
+                        flag = true;
+                        if (isValidEmptyParkingPlace(i, j)) {
+                            return new int[]{i,j};
+                        }
+                    }
+                }
+            }
+            if(!flag) break;
+            ctr++;
+        }
+        return new int[]{-1,-1};
     }
 
     public int[] getCarNumberPosition(String CarNo) {
