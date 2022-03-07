@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ParkingLot {
 
-    private final int floor;
+    private final int floorNo;
     private final int row;
     private final int col;
     private final ArrayList<ArrayList<Cell>> mat;
@@ -14,7 +14,7 @@ public class ParkingLot {
 
     public ParkingLot(int floor, int row, int col,int inBetweenPathWidth) {
         vacancy = row * col;
-        this.floor = floor;
+        this.floorNo = floor;
         this.row = row + (((row - 1)/2)+2) * inBetweenPathWidth;
         this.col = col + (2 * inBetweenPathWidth);
         this.mat = new ArrayList<>();
@@ -71,8 +71,8 @@ public class ParkingLot {
         return vacancy;
     }
 
-    public int getFloor() {
-        return floor;
+    public int getFloorNo() {
+        return floorNo;
     }
 
     public int getRow() {

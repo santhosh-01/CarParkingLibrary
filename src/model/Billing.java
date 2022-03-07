@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 public class Billing {
 
@@ -13,11 +14,9 @@ public class Billing {
     public static String moneyAbbr;
     private double bill;
 
-    public Billing(LocalTime carEntryTime, LocalTime carExitTime, long seconds) {
+    public Billing(LocalTime carEntryTime) {
         this.id = nextId;
         this.carEntryTime = carEntryTime;
-        this.carExitTime = carExitTime;
-        this.bill = calculateBill(seconds);
         nextId ++;
     }
 
@@ -30,7 +29,7 @@ public class Billing {
     }
 
     private double calculateBill(long seconds) {
-        double billingAmountPerSecond = this.billingAmountPerHour/(60.0 * 60.0);
+        double billingAmountPerSecond = billingAmountPerHour/(60.0 * 60.0);
         return billingAmountPerSecond * seconds;
     }
 
@@ -47,6 +46,18 @@ public class Billing {
     }
 
     public double getBill() {
-        return bill;
+        if(this.carExitTime == null) {
+            this.bill = calculateBill(calculateCarParkedInSeconds());
+        }
+        return this.bill;
+    }
+
+    public void setCarExitTime(LocalTime carExitTime, long seconds) {
+        this.carExitTime = carExitTime;
+        this.bill = calculateBill(seconds);
+    }
+
+    private long calculateCarParkedInSeconds() {
+        return ChronoUnit.SECONDS.between(this.carEntryTime, LocalTime.now());
     }
 }
