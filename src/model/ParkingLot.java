@@ -172,12 +172,17 @@ public class ParkingLot {
         }
     }
 
-    public boolean exitACar(int[] pos) {
+    public ParkingCell exitACar(int[] pos) {
         ParkingCell parkingCell = ((ParkingCell)mat.get(pos[0]).get(pos[1]));
         parkingCell.setCarExitTime(LocalTime.now());
+        ParkingCell parkingCell1 = new ParkingCell(parkingCell);
         parkingCell.setCar(null);
+        parkingCell.setCellValue("-");
+        parkingCell.setParkedTime(null);
+        parkingCell.setCarExitTime(null);
+        parkingCell.setIsParked("E");
         this.vacancy ++;
-        return true;
+        return parkingCell1;
     }
 
     public void showModifiedParkingLot(boolean isDescriptionNeeded) {
@@ -391,15 +396,14 @@ public class ParkingLot {
         }
     }
 
-    public boolean parkCarAtPosition(Car car, int r, int c) {
-        if(!isValidEmptyParkingPlace(r,c)) return false;
+    public void parkCarAtPosition(Car car, int r, int c) {
+        if(!isValidEmptyParkingPlace(r,c)) return;
         if(mat.get(r).get(c) instanceof ParkingCell) {
             ((ParkingCell)mat.get(r).get(c)).setCar(car);
             ((ParkingCell)mat.get(r).get(c)).setParkedTime(LocalTime.now());
             ((ParkingCell)mat.get(r).get(c)).setIsParked("P");
         }
         this.vacancy --;
-        return true;
     }
 
     public void removeDirections() {
