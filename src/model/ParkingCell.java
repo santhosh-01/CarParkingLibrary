@@ -10,6 +10,13 @@ public class ParkingCell extends Cell{
     private LocalTime carExitTime;
     private String isParked;
 
+    public ParkingCell(ParkingCell parkingCell) {
+        this.car = parkingCell.getCar();
+        this.parkedTime = parkingCell.getParkedTime();
+        this.carExitTime = parkingCell.getCarExitTime();
+        this.isParked = parkingCell.getIsParked();
+    }
+
     public ParkingCell() {
         super.setCellValue("-");
     }
@@ -57,10 +64,4 @@ public class ParkingCell extends Cell{
         return ChronoUnit.SECONDS.between(this.getParkedTime(), carExitTime);
     }
 
-    public void setParkingPlaceEmpty() {
-        this.setCellValue("-");
-        this.setParkedTime(null);
-        this.setCarExitTime(null);
-        this.setIsParked("E");
-    }
 }
