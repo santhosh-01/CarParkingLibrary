@@ -30,7 +30,7 @@ public interface CarParking {
 
     long calculateParkingTimeInSeconds(ParkingCell parkingCell);
 
-    double generateBill(ParkingCell parkingCell, Car car, long seconds);
+    String generateBill(ParkingCell parkingCell, Car car, long seconds);
 
     void generatePathToParkACar(ParkingLot parkingLot, int[] position);
 

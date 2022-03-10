@@ -296,14 +296,14 @@ public class CarParkingImpl implements CarParking{
     }
 
     @Override
-    public double generateBill(ParkingCell parkingCell, Car car, long seconds) {
+    public String generateBill(ParkingCell parkingCell, Car car, long seconds) {
         CarEntryExitTable carEntryExitTable = new CarEntryExitTable();
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(car.getCarNumber());
         CarEntryExit carEntryExit = carEntryExitMaster.getLastCarEntryExit();
         carEntryExit.setExitTime(parkingCell.getCarExitTime());
         Billing billing = carEntryExit.getBilling();
         billing.setCarExitTime(parkingCell.getCarExitTime(),seconds);
-        return billing.getBill();
+        return String.format("\nBill Amount for Parking: %.2f " + Billing.moneyAbbr + "\n", billing.getBill());
     }
 
     @Override
