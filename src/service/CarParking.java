@@ -28,18 +28,20 @@ public interface CarParking {
 
     ParkingCell exitACarFromPosition(ParkingLot parkingLot, int[] pos, Car car);
 
-    long calculateParkingTimeInSeconds(ParkingCell parkingCell);
-
-    String generateBill(ParkingCell parkingCell, Car car, long seconds);
+    Billing generateBill(ParkingCell parkingCell, Car car);
 
     void generatePathToParkACar(ParkingLot parkingLot, int[] position);
 
     void generatePathToExitACar(ParkingLot parkingLot, int[] pos);
 
-    Car getValidCarNumberInParkingHistory();
+    Car getValidCarInParkingHistory();
+
+    String getValidCarNumberInParkingHistory();
 
     void showCarParkingHistory(Car car);
 
     boolean checkDuplicateCarNoInParking(String carNo);
+
+    ArrayList<Billing> getBillingsByCarNo(String carNo);
 
 }
