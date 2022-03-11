@@ -234,6 +234,7 @@ public class CarParkingImpl implements CarParking{
         CarEntryExit carEntryExit = new CarEntryExit(parkingCell.getParkedTime(),
                 new int[]{position[0]+1,position[1]+1,parkingLot.getFloorNo()});
         carEntryExitMaster.addEntryExit(carEntryExit);
+        carEntryExitMaster.addBilling(carEntryExit.getBilling());
     }
 
     @Override
@@ -291,19 +292,14 @@ public class CarParkingImpl implements CarParking{
     }
 
     @Override
-    public long calculateParkingTimeInSeconds(ParkingCell parkingCell) {
-        return parkingCell.calculateCarParkedInSeconds();
-    }
-
-    @Override
-    public String generateBill(ParkingCell parkingCell, Car car, long seconds) {
+    public Billing generateBill(ParkingCell parkingCell, Car car) {
         CarEntryExitTable carEntryExitTable = new CarEntryExitTable();
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(car.getCarNumber());
         CarEntryExit carEntryExit = carEntryExitMaster.getLastCarEntryExit();
         carEntryExit.setExitTime(parkingCell.getCarExitTime());
         Billing billing = carEntryExit.getBilling();
-        billing.setCarExitTime(parkingCell.getCarExitTime(),seconds);
-        return String.format("\nBill Amount for Parking: %.2f " + Billing.moneyAbbr + "\n", billing.getBill());
+        billing.setCarExitTime(parkingCell.getCarExitTime());
+        return billing;
     }
 
     @Override
@@ -321,7 +317,7 @@ public class CarParkingImpl implements CarParking{
     }
 
     @Override
-    public Car getValidCarNumberInParkingHistory() {
+    public Car getValidCarInParkingHistory() {
         while (true) {
             Scanner in = new Scanner(System.in);
             String carNumber = dataProvider.getCarNumberForCarHistory();
@@ -339,6 +335,28 @@ public class CarParkingImpl implements CarParking{
                 continue;
             }
             return carTable.getCarByCarNo(carNumber);
+        }
+    }
+
+    @Override
+    public String getValidCarNumberInParkingHistory() {
+        while (true) {
+            Scanner in = new Scanner(System.in);
+            String carNumber = dataProvider.getCarNumberForCarHistory();
+            if(carNumber.equalsIgnoreCase("back")) return null;
+            CarTable carTable = new CarTable();
+            if(carNumber.equals("")) {
+                System.out.println("\nSorry! Given Car Number doesn't found! Please enter valid " +
+                        "Car Number which is in parking");
+                System.out.println("If you want to move back to main menu, Enter 'back'");
+                continue;
+            }
+            if(!carTable.isCarNumberExist(carNumber)) {
+                System.out.println("\nSorry! Given Car not found!! Please enter valid Car Number");
+                System.out.println("If you want to move back to main menu, Enter 'back'");
+                continue;
+            }
+            return carNumber;
         }
     }
 
@@ -371,13 +389,15 @@ public class CarParkingImpl implements CarParking{
         }
     }
 
+    @Override
+    public ArrayList<Billing> getBillingsByCarNo(String carNo) {
+        CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(carNo);
+        return carEntryExitMaster.getBillings();
+    }
+
     private String getOrdinalNumber(int floorNo) {
         if(floorNo == 0) return "Ground";
         else return OrdinalNumber.getOrdinalNo(floorNo);
-    }
-
-    private String getTime(LocalTime time) {
-        return time.getHour() + ":" + time.getMinute() + ":" + time.getSecond();
     }
 
 }
