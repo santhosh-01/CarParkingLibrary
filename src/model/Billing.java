@@ -5,9 +5,9 @@ import java.time.temporal.ChronoUnit;
 
 public class Billing {
 
-    private int id;
+    private final int id;
     private static int nextId = 1001;
-    private LocalTime carEntryTime;
+    private final LocalTime carEntryTime;
     private LocalTime carExitTime;
     public static MoneyType moneyType;
     public static double billingAmountPerHour = 100.0;
@@ -52,12 +52,26 @@ public class Billing {
         return this.bill;
     }
 
-    public void setCarExitTime(LocalTime carExitTime, long seconds) {
+    public void setCarExitTime(LocalTime carExitTime) {
         this.carExitTime = carExitTime;
-        this.bill = calculateBill(seconds);
+        this.bill = calculateBill(calculateCarParkedInSeconds());
     }
 
     private long calculateCarParkedInSeconds() {
-        return ChronoUnit.SECONDS.between(this.carEntryTime, LocalTime.now());
+        if(carExitTime == null) return ChronoUnit.SECONDS.between(this.carEntryTime, LocalTime.now());
+        else return ChronoUnit.SECONDS.between(this.carEntryTime, carExitTime);
+    }
+
+    private String getTime(LocalTime time) {
+        return String.format("%02d:%02d:%02d",time.getHour(),time.getMinute(),time.getSecond());
+    }
+
+    @Override
+    public String toString() {
+        return "{id=" + id +
+                ", carEntryTime=" + getTime(carEntryTime) +
+                ", carExitTime=" + getTime(carExitTime==null?LocalTime.of(0,0,0):carExitTime) +
+                String.format(", parkingTimeInSeconds=%d seconds",calculateCarParkedInSeconds()) +
+                String.format(", bill=%.2f %s}",getBill(),Billing.moneyAbbr);
     }
 }
