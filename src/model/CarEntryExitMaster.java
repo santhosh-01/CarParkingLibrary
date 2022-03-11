@@ -4,12 +4,14 @@ import java.util.ArrayList;
 
 public class CarEntryExitMaster {
 
-    private String carNumber;
-    private ArrayList<CarEntryExit> carEntryExits;
+    private final String carNumber;
+    private final ArrayList<CarEntryExit> carEntryExits;
+    private final ArrayList<Billing> billings;
 
     public CarEntryExitMaster(String carNumber) {
         this.carNumber = carNumber;
         this.carEntryExits = new ArrayList<>();
+        this.billings = new ArrayList<>();
     }
 
     public String getCarNumber() {
@@ -26,5 +28,13 @@ public class CarEntryExitMaster {
 
     public CarEntryExit getLastCarEntryExit() {
         return carEntryExits.get(carEntryExits.size() - 1);
+    }
+
+    public void addBilling(Billing billing) {
+        this.billings.add(billing);
+    }
+
+    public ArrayList<Billing> getBillings() {
+        return billings;
     }
 }
