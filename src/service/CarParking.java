@@ -38,7 +38,7 @@ public interface CarParking {
 
     String getValidCarNumberInParkingHistory();
 
-    void showCarParkingHistory(Car car);
+    boolean showCarParkingHistory(Car car);
 
     boolean checkDuplicateCarNoInParking(String carNo);
 
