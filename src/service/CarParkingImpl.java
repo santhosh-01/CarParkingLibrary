@@ -164,7 +164,6 @@ public class CarParkingImpl implements CarParking{
 
     @Override
     public ParkingLot suggestAndGetCarParkingLot() {
-        Scanner in = new Scanner(System.in);
         int ind = obj.getLowestFloorWithVacancy();
         while (true) {
             String choice = dataProvider.getSuggestedParkingFloorConfirmation(ind);
@@ -248,7 +247,6 @@ public class CarParkingImpl implements CarParking{
 
     private Car getValidCarFromParking() {
         while (true) {
-            Scanner in = new Scanner(System.in);
             String carNo = dataProvider.getCarNumberToExit();
             if(carNo.equalsIgnoreCase("back")) return null;
             CarTable carTable = new CarTable();
@@ -271,7 +269,6 @@ public class CarParkingImpl implements CarParking{
     @Override
     public boolean confirmCarDetailsForExit(Car car) {
         while (true) {
-            Scanner in = new Scanner(System.in);
             String choice = dataProvider.givenCarConfirmation(car);
             if(choice.equalsIgnoreCase("yes")) return true;
             else if(choice.equalsIgnoreCase("no")) {
@@ -305,21 +302,20 @@ public class CarParkingImpl implements CarParking{
     @Override
     public void generatePathToParkACar(ParkingLot parkingLot, int[] position) {
         System.out.println("\nDetailed Path to park the car in the given parking place " +
-                "at " + getOrdinalNumber(parkingLot.getFloorNo()) + " floor");
+                "at " + OrdinalNumber.getOrdinalNo(parkingLot.getFloorNo()) + " floor");
         showPathToParkACar(parkingLot,position[0],position[1]);
     }
 
     @Override
     public void generatePathToExitACar(ParkingLot parkingLot, int[] pos) {
         System.out.println("\nDetailed Path to exit the car from the parking place " +
-                "at " + getOrdinalNumber(parkingLot.getFloorNo()) + " floor");
+                "at " + OrdinalNumber.getOrdinalNo(parkingLot.getFloorNo()) + " floor");
         showPathToExitACar(parkingLot,pos[0],pos[1]);
     }
 
     @Override
     public Car getValidCarInParkingHistory() {
         while (true) {
-            Scanner in = new Scanner(System.in);
             String carNumber = dataProvider.getCarNumberForCarHistory();
             if(carNumber.equalsIgnoreCase("back")) return null;
             CarTable carTable = new CarTable();
@@ -340,7 +336,6 @@ public class CarParkingImpl implements CarParking{
     @Override
     public String getValidCarNumberInParkingHistory() {
         while (true) {
-            Scanner in = new Scanner(System.in);
             String carNumber = dataProvider.getCarNumberForBillingHistory();
             if(carNumber.equalsIgnoreCase("back")) return null;
             CarTable carTable = new CarTable();
@@ -390,11 +385,6 @@ public class CarParkingImpl implements CarParking{
     public ArrayList<Billing> getBillingsByCarNo(String carNo) {
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(carNo);
         return carEntryExitMaster.getBillings();
-    }
-
-    private String getOrdinalNumber(int floorNo) {
-        if(floorNo == 0) return "Ground";
-        else return OrdinalNumber.getOrdinalNo(floorNo);
     }
 
 }
