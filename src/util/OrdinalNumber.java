@@ -6,6 +6,9 @@ public class OrdinalNumber {
     }
 
     public static String getOrdinalNo(int value) {
+
+        if(value == 0) return "Ground";
+
         int hunRem = value % 100;
         int tenRem = value % 10;
         if (hunRem - tenRem == 10) {
