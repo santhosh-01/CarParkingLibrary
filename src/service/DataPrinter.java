@@ -46,4 +46,6 @@ public interface DataPrinter {
 
     void duplicateCarExist();
 
+    void givenCarNumberEmpty();
+
 }
