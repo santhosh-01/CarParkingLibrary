@@ -8,11 +8,7 @@ public interface CarParking {
 
     Car acceptCarDetailsToPark();
 
-    Car createCar(String carNo, String carBrand, String carModel);
-
     boolean confirmCarDetails(Car car);
-
-    CarEntryExit checkAndGetLastCarParkingPlace(Car car);
 
     boolean checkAndSuggestLastCarParkingPlace(Car car);
 
