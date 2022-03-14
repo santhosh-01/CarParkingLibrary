@@ -31,6 +31,8 @@ public interface DataProvider {
 
     String getBackChoice();
 
+    String getCarNumberForBillingHistory();
+
     String getCarNumberForCarHistory();
 
 }
