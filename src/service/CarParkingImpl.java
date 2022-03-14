@@ -9,7 +9,6 @@ import util.Validator;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class CarParkingImpl implements CarParking{
 
@@ -72,8 +71,7 @@ public class CarParkingImpl implements CarParking{
         return car;
     }
 
-    @Override
-    public Car createCar(String carNo, String carBrand, String carModel) {
+    private Car createCar(String carNo, String carBrand, String carModel) {
         Car car;
         car = new Car(carNo,carBrand,carModel);
         CarTable carTable = new CarTable();
@@ -109,8 +107,7 @@ public class CarParkingImpl implements CarParking{
         return true;
     }
 
-    @Override
-    public CarEntryExit checkAndGetLastCarParkingPlace(Car car) {
+    private CarEntryExit checkAndGetLastCarParkingPlace(Car car) {
         String carNumber = car.getCarNumber();
         CarEntryExitTable carEntryExitTable = new CarEntryExitTable();
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(carNumber);
@@ -315,28 +312,14 @@ public class CarParkingImpl implements CarParking{
 
     @Override
     public Car getValidCarInParkingHistory() {
-        while (true) {
-            String carNumber = dataProvider.getCarNumberForCarHistory();
-            if(carNumber.equalsIgnoreCase("back")) return null;
-            CarTable carTable = new CarTable();
-            if(carNumber.equals("")) {
-                dataPrinter.givenCarNumberEmpty();
-                dataPrinter.askingBackToMainMenu();
-                continue;
-            }
-            if(!carTable.isCarNumberExist(carNumber)) {
-                dataPrinter.givenCarNotInParking();
-                dataPrinter.askingBackToMainMenu();
-                continue;
-            }
-            return carTable.getCarByCarNo(carNumber);
-        }
+        CarTable carTable = new CarTable();
+        return carTable.getCarByCarNo(getValidCarNumberInParkingHistory());
     }
 
     @Override
     public String getValidCarNumberInParkingHistory() {
         while (true) {
-            String carNumber = dataProvider.getCarNumberForBillingHistory();
+            String carNumber = dataProvider.getCarNumberForHistory();
             if(carNumber.equalsIgnoreCase("back")) return null;
             CarTable carTable = new CarTable();
             if(carNumber.equals("")) {
