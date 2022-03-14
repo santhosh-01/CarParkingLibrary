@@ -324,14 +324,13 @@ public class CarParkingImpl implements CarParking{
             if(carNumber.equalsIgnoreCase("back")) return null;
             CarTable carTable = new CarTable();
             if(carNumber.equals("")) {
-                System.out.println("\nSorry! Given Car Number doesn't found! Please enter valid " +
-                        "Car Number which is in parking");
-                System.out.println("If you want to move back to main menu, Enter 'back'");
+                dataPrinter.givenCarNumberEmpty();
+                dataPrinter.askingBackToMainMenu();
                 continue;
             }
             if(!carTable.isCarNumberExist(carNumber)) {
-                System.out.println("\nSorry! Given Car not found!! Please enter valid Car Number");
-                System.out.println("If you want to move back to main menu, Enter 'back'");
+                dataPrinter.givenCarNotInParking();
+                dataPrinter.askingBackToMainMenu();
                 continue;
             }
             return carTable.getCarByCarNo(carNumber);
@@ -342,18 +341,17 @@ public class CarParkingImpl implements CarParking{
     public String getValidCarNumberInParkingHistory() {
         while (true) {
             Scanner in = new Scanner(System.in);
-            String carNumber = dataProvider.getCarNumberForCarHistory();
+            String carNumber = dataProvider.getCarNumberForBillingHistory();
             if(carNumber.equalsIgnoreCase("back")) return null;
             CarTable carTable = new CarTable();
             if(carNumber.equals("")) {
-                System.out.println("\nSorry! Given Car Number doesn't found! Please enter valid " +
-                        "Car Number which is in parking");
-                System.out.println("If you want to move back to main menu, Enter 'back'");
+                dataPrinter.givenCarNumberEmpty();
+                dataPrinter.askingBackToMainMenu();
                 continue;
             }
             if(!carTable.isCarNumberExist(carNumber)) {
-                System.out.println("\nSorry! Given Car not found!! Please enter valid Car Number");
-                System.out.println("If you want to move back to main menu, Enter 'back'");
+                dataPrinter.givenCarNotInParking();
+                dataPrinter.askingBackToMainMenu();
                 continue;
             }
             return carNumber;
@@ -361,12 +359,10 @@ public class CarParkingImpl implements CarParking{
     }
 
     @Override
-    public void showCarParkingHistory(Car car) {
-        System.out.println("\nParking History:");
+    public boolean showCarParkingHistory(Car car) {
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(car.getCarNumber());
         if(carEntryExitMaster == null) {
-            System.out.println("No Parking History Available");
-            return;
+            return false;
         }
         for (CarEntryExit carEntryExit:carEntryExitMaster.getCarEntryExits()) {
             LocalTime time1 = carEntryExit.getEntryTime();
@@ -375,6 +371,7 @@ public class CarParkingImpl implements CarParking{
 
             dataPrinter.carParkingHistory(time1,time2,pos,carEntryExit);
         }
+        return true;
     }
 
     @Override
