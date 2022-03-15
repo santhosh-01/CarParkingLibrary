@@ -55,8 +55,8 @@ public class CarParkingImpl implements CarParking{
 
     @Override
     public Car acceptCarDetailsToPark() {
-        if (!dataProvider.acceptBillingAmount()) return null;
-        String carNo = dataProvider.validateAndGetCarNumber();
+        if (!dataProvider.billingAmountAcceptance()) return null;
+        String carNo = validateAndGetCarNumber();
         String carBrand, carModel;
         Car car;
         CarTable carTable = new CarTable();
@@ -64,11 +64,35 @@ public class CarParkingImpl implements CarParking{
             car = carTable.getCarByCarNo(carNo);
         }
         else {
-            carBrand = dataProvider.validateAndGetCarBrand();
-            carModel = dataProvider.validateAndGetCarModel();
+            carBrand = validateAndGetCarBrand();
+            carModel = validateAndGetCarModel();
             car = createCar(carNo,carBrand,carModel);
         }
         return car;
+    }
+
+    private String validateAndGetCarNumber() {
+        String carNo;
+        do {
+            carNo = dataProvider.getCarNumber();
+        } while (carNo == null);
+        return carNo;
+    }
+
+    private String validateAndGetCarBrand() {
+        String carBrand;
+        do {
+            carBrand = dataProvider.getCarBrand();
+        } while (carBrand == null);
+        return carBrand;
+    }
+
+    private String validateAndGetCarModel() {
+        String carModel;
+        do {
+            carModel = dataProvider.getCarModel();
+        } while (carModel == null);
+        return carModel;
     }
 
     private Car createCar(String carNo, String carBrand, String carModel) {
@@ -86,17 +110,17 @@ public class CarParkingImpl implements CarParking{
             String carBrand = car.getCarBrand();
             String carModel = car.getCarModel();
             dataPrinter.showCarDetails(carNo,carBrand,carModel);
-            String ch = dataProvider.getCarConfirmation();
+            String ch = dataProvider.getCarDetailsConfirmation();
             int choice = Validator.validateInteger(ch,1,5);
             if(choice == -1) continue;
             if(choice == 1) {
-                car.setCarNumber(dataProvider.validateAndGetCarNumber());
+                car.setCarNumber(validateAndGetCarNumber());
             }
             else if(choice == 2) {
-                car.setCarBrand(dataProvider.validateAndGetCarBrand());
+                car.setCarBrand(validateAndGetCarBrand());
             }
             else if(choice == 3) {
-                car.setCarModel(dataProvider.validateAndGetCarModel());
+                car.setCarModel(validateAndGetCarModel());
             }
             else if(choice == 4) break;
             else if(choice == 5) {
