@@ -5,15 +5,15 @@ import model.ParkingLot;
 
 public interface DataProvider {
 
-    boolean acceptBillingAmount();
+    boolean billingAmountAcceptance();
 
-    String validateAndGetCarModel();
+    String getCarModel();
 
-    String validateAndGetCarBrand();
+    String getCarBrand();
 
-    String validateAndGetCarNumber();
+    String getCarNumber();
 
-    String getCarConfirmation();
+    String getCarDetailsConfirmation();
 
     String getLastCarParkingConfirmation();
 
