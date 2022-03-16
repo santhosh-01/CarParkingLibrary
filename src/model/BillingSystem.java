@@ -3,7 +3,7 @@ package model;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-public class Billing {
+public class BillingSystem {
 
     private final int id;
     private static int nextId = 1001;
@@ -14,14 +14,14 @@ public class Billing {
     public static String moneyAbbr;
     private double bill;
 
-    public Billing(LocalTime carEntryTime) {
+    public BillingSystem(LocalTime carEntryTime) {
         this.id = nextId;
         this.carEntryTime = carEntryTime;
         nextId ++;
     }
 
     public static void setMoneyType(MoneyType moneyType) {
-        Billing.moneyType = moneyType;
+        BillingSystem.moneyType = moneyType;
         switch (moneyType) {
             case INR -> moneyAbbr = "INR";
             case USD -> moneyAbbr = "USD";
@@ -72,6 +72,6 @@ public class Billing {
                 ", carEntryTime=" + getTime(carEntryTime) +
                 ", carExitTime=" + getTime(carExitTime==null?LocalTime.of(0,0,0):carExitTime) +
                 String.format(", parkingTimeInSeconds=%d seconds",calculateCarParkedInSeconds()) +
-                String.format(", bill=%.2f %s}",getBill(),Billing.moneyAbbr);
+                String.format(", bill=%.2f %s}",getBill(), BillingSystem.moneyAbbr);
     }
 }
