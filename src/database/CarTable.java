@@ -6,11 +6,7 @@ import java.util.ArrayList;
 
 public class CarTable {
 
-    private static final ArrayList<Car> cars;
-
-    static {
-        cars = new ArrayList<>();
-    }
+    private final ArrayList<Car> cars = new ArrayList<>();
 
     public boolean isCarNumberExist(String carNo) {
         for (Car car:cars) {
