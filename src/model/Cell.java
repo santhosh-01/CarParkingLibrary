@@ -3,7 +3,7 @@ package model;
 public class Cell {
 
     private String cellValue;
-    private String position;
+    private int position;
 
     public String getCellValue() {
         return cellValue;
@@ -13,11 +13,11 @@ public class Cell {
         this.cellValue = cellValue;
     }
 
-    public String getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 }
