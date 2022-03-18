@@ -6,7 +6,7 @@ public class CarEntryExitMaster {
 
     private final String carNumber;
     private final ArrayList<CarEntryExit> carEntryExits;
-    private final ArrayList<Billing> billings;
+    private final ArrayList<BillingSystem> billings;
 
     public CarEntryExitMaster(String carNumber) {
         this.carNumber = carNumber;
@@ -30,11 +30,11 @@ public class CarEntryExitMaster {
         return carEntryExits.get(carEntryExits.size() - 1);
     }
 
-    public void addBilling(Billing billing) {
+    public void addBilling(BillingSystem billing) {
         this.billings.add(billing);
     }
 
-    public ArrayList<Billing> getBillings() {
+    public ArrayList<BillingSystem> getBillings() {
         return billings;
     }
 }
