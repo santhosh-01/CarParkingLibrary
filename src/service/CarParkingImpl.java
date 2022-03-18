@@ -17,16 +17,19 @@ public class CarParkingImpl implements CarParking{
     private final DataProvider dataProvider;
     private final DataPrinter dataPrinter;
 
+    private final CarTable carTable;
     private final CarInParking carInParking;
     private final CarEntryExitTable carEntryExitTable;
 
-    public CarParkingImpl(MultiFloorCarParking obj, DataProvider dataProvider, DataPrinter dataPrinter) {
+    public CarParkingImpl(MultiFloorCarParking obj, DataProvider dataProvider, DataPrinter dataPrinter,
+                          CarTable carTable, CarInParking carInParking, CarEntryExitTable carEntryExitTable) {
         this.obj = obj;
         this.arr = obj.getParkingLots();
         this.dataProvider = dataProvider;
         this.dataPrinter = dataPrinter;
-        carInParking = new CarInParking();
-        carEntryExitTable = new CarEntryExitTable();
+        this.carTable = carTable;
+        this.carInParking = carInParking;
+        this.carEntryExitTable = carEntryExitTable;
     }
 
     private void showPathToParkACar(ParkingLot parkingLot, int row, int col) {
@@ -59,7 +62,6 @@ public class CarParkingImpl implements CarParking{
         String carNo = validateAndGetCarNumber();
         String carBrand, carModel;
         Car car;
-        CarTable carTable = new CarTable();
         if(carTable.isCarNumberExist(carNo)) {
             car = carTable.getCarByCarNo(carNo);
         }
@@ -98,7 +100,6 @@ public class CarParkingImpl implements CarParking{
     private Car createCar(String carNo, String carBrand, String carModel) {
         Car car;
         car = new Car(carNo,carBrand,carModel);
-        CarTable carTable = new CarTable();
         carTable.addCar(car);
         return car;
     }
@@ -110,7 +111,7 @@ public class CarParkingImpl implements CarParking{
             String carBrand = car.getCarBrand();
             String carModel = car.getCarModel();
             dataPrinter.showCarDetails(carNo,carBrand,carModel);
-            String ch = dataProvider.getCarDetailsConfirmation();
+            String ch = dataProvider.getCarConfirmation();
             int choice = Validator.validateInteger(ch,1,5);
             if(choice == -1) continue;
             if(choice == 1) {
@@ -131,9 +132,8 @@ public class CarParkingImpl implements CarParking{
         return true;
     }
 
-    private CarEntryExit checkAndGetLastCarParkingPlace(Car car) {
+    private CarEntryExit checkAndGetLastCarEntryExit(Car car) {
         String carNumber = car.getCarNumber();
-        CarEntryExitTable carEntryExitTable = new CarEntryExitTable();
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(carNumber);
         if(carEntryExitMaster != null) {
             return carEntryExitMaster.getLastCarEntryExit();
@@ -146,31 +146,34 @@ public class CarParkingImpl implements CarParking{
     }
 
     @Override
-    public boolean checkAndSuggestLastCarParkingPlace(Car car){
-        CarEntryExit carEntryExit = checkAndGetLastCarParkingPlace(car);
-        if(carEntryExit == null) return false;
-        int[] pos = carEntryExit.getPosition();
-        ParkingLot parkingLot = arr.get(pos[2]);
+    public CarLocation checkAndSuggestLastCarParkingPlace(Car car){
+        CarEntryExit carEntryExit = checkAndGetLastCarEntryExit(car);
+        if(carEntryExit == null) return null;
+        CarLocation pos = carEntryExit.getPosition();
+        ParkingLot parkingLot = arr.get(pos.getFloorNo());
 
         dataPrinter.LastCarParkingDetails(pos,carEntryExit);
 
-        int[] position = new int[3];
-        int[] position1 = parkingLot.getNearestParkingPosition(pos[0]-1,pos[1]-1);
-        position[0] = position1[0];
-        position[1] = position1[1];
-        position[2] = pos[2];
-        if(position[0] != -1 && pos[1] != -1) {
+        if(obj.getLowestFloorWithVacancy()<pos.getFloorNo()) {
+            System.out.println("\nBut Empty Parking Place is available at lower floor");
+            return null;
+        }
+
+        CarLocation position = new CarLocation();
+        CarParkingPlace position1 = parkingLot.getNearestParkingPosition(pos.getCarParkingPlace().getRow()-1,
+                pos.getCarParkingPlace().getCol()-1);
+        position.setCarParkingPlace(position1);
+        position.setFloorNo(pos.getFloorNo());
+        if(position1 != null) {
             dataPrinter.emptyCarParkingPlace(position);
             dataPrinter.parkingConfirmation();
             while (true) {
                 String choice = dataProvider.getLastCarParkingConfirmation();
                 if(choice.equalsIgnoreCase("yes")) {
-                    CarParking carParking = new CarParkingImpl(obj,dataProvider,dataPrinter);
-                    dataPrinter.generateReceipt(carParking,obj,parkingLot,position,car);
-                    return true;
+                    return position;
                 }
                 else if(choice.equalsIgnoreCase("no")) {
-                    return false;
+                    return null;
                 }
                 else {
                     dataPrinter.yesOrNoInvalidMessage();
@@ -178,9 +181,9 @@ public class CarParkingImpl implements CarParking{
             }
         }
         else {
-            dataPrinter.parkingIsFullInFloor(pos[2]);
+            dataPrinter.parkingIsFullInFloor(pos.getFloorNo());
         }
-        return false;
+        return null;
     }
 
     @Override
@@ -207,27 +210,25 @@ public class CarParkingImpl implements CarParking{
     }
 
     @Override
-    public int[] suggestAndGetParkingPlace(ParkingLot parkingLot) {
-        int[] position = parkingLot.getFirstParkingPosition();
+    public CarParkingPlace suggestAndGetParkingPlace(ParkingLot parkingLot) {
+        int position = parkingLot.getFirstParkingPosition();
         while (true) {
             String choice = dataProvider.getSuggestedParkingPlaceConfirmation(position);
             if(choice.equalsIgnoreCase("yes")) {
-                return position;
+                CarLocation carLocation = obj.getCarLocation(position);
+                return carLocation.getCarParkingPlace();
             }
             else if(choice.equalsIgnoreCase("no")){
                 while (true) {
-                    String str = dataProvider.getCarParkingPlace(parkingLot);
-                    if(!str.contains("/")) {
-                        dataPrinter.askCorrectFormatOfParkingPlace();
+                    int num = dataProvider.getCarParkingPlace(parkingLot);
+                    CarLocation location = obj.getCarLocation(num);
+                    if(location == null) {
+                        System.out.println("Given Car Position is Invalid");
                         continue;
                     }
-                    String[] pos = str.split("/");
-                    position[0] = Validator.validateInteger(pos[0],"rows") - 1;
-                    if(position[0] == -2) continue;
-                    position[1] = Validator.validateInteger(pos[1],"columns") - 1;
-                    if(position[1] == -2) continue;
-                    if(parkingLot.isValidEmptyParkingPlace(position[0], position[1])) {
-                        return position;
+                    CarParkingPlace carParkingPlace = location.getCarParkingPlace();
+                    if(parkingLot.isValidEmptyParkingPlace(carParkingPlace.getRow(), carParkingPlace.getCol())) {
+                        return new CarParkingPlace(carParkingPlace.getRow(),carParkingPlace.getCol());
                     }
                     else {
                         dataPrinter.invalidParkingPlace();
@@ -241,18 +242,15 @@ public class CarParkingImpl implements CarParking{
     }
 
     @Override
-    public void parkACar(ParkingLot parkingLot, int[] position, Car car) {
-        parkingLot.parkCarAtPosition(car, position[0], position[1]);
+    public void parkACar(ParkingLot parkingLot, CarParkingPlace position, Car car) {
+        parkingLot.parkCarAtPosition(car, position.getRow(), position.getCol());
 
-        CarEntryExitTable carEntryExitTable = new CarEntryExitTable();
-
-        CarInParking carInParking = new CarInParking();
         carInParking.addCars(car);
 
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(car.getCarNumber());
-        ParkingCell parkingCell = parkingLot.getParkingCellByPosition(position[0],position[1]);
+        ParkingCell parkingCell = parkingLot.getParkingCellByPosition(position.getRow(),position.getCol());
         CarEntryExit carEntryExit = new CarEntryExit(parkingCell.getParkedTime(),
-                new int[]{position[0]+1,position[1]+1,parkingLot.getFloorNo()});
+                new CarLocation(position.getRow()+1,position.getCol()+1,parkingLot.getFloorNo()));
         carEntryExitMaster.addEntryExit(carEntryExit);
         carEntryExitMaster.addBilling(carEntryExit.getBilling());
     }
@@ -270,7 +268,6 @@ public class CarParkingImpl implements CarParking{
         while (true) {
             String carNo = dataProvider.getCarNumberToExit();
             if(carNo.equalsIgnoreCase("back")) return null;
-            CarTable carTable = new CarTable();
             Car car = carTable.getCarByCarNo(carNo);
             if(car == null) {
                 dataPrinter.carNumberNotFound();
@@ -302,41 +299,31 @@ public class CarParkingImpl implements CarParking{
     }
 
     @Override
-    public ParkingCell exitACarFromPosition(ParkingLot parkingLot, int[] pos, Car car) {
-        ParkingCell parkingCell = parkingLot.exitACar(pos);
-        CarInParking carInParking = new CarInParking();
-        carInParking.removeCar(car.getCarNumber());
-        return parkingCell;
-    }
-
-    @Override
-    public Billing generateBill(ParkingCell parkingCell, Car car) {
-        CarEntryExitTable carEntryExitTable = new CarEntryExitTable();
+    public BillingSystem generateBill(ParkingCell parkingCell, Car car) {
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(car.getCarNumber());
         CarEntryExit carEntryExit = carEntryExitMaster.getLastCarEntryExit();
         carEntryExit.setExitTime(parkingCell.getCarExitTime());
-        Billing billing = carEntryExit.getBilling();
+        BillingSystem billing = carEntryExit.getBilling();
         billing.setCarExitTime(parkingCell.getCarExitTime());
         return billing;
     }
 
     @Override
-    public void generatePathToParkACar(ParkingLot parkingLot, int[] position) {
+    public void generatePathToParkACar(ParkingLot parkingLot, CarParkingPlace position) {
         System.out.println("\nDetailed Path to park the car in the given parking place " +
                 "at " + OrdinalNumber.getOrdinalNo(parkingLot.getFloorNo()) + " floor");
-        showPathToParkACar(parkingLot,position[0],position[1]);
+        showPathToParkACar(parkingLot,position.getRow(),position.getCol());
     }
 
     @Override
-    public void generatePathToExitACar(ParkingLot parkingLot, int[] pos) {
+    public void generatePathToExitACar(ParkingLot parkingLot, CarParkingPlace pos) {
         System.out.println("\nDetailed Path to exit the car from the parking place " +
                 "at " + OrdinalNumber.getOrdinalNo(parkingLot.getFloorNo()) + " floor");
-        showPathToExitACar(parkingLot,pos[0],pos[1]);
+        showPathToExitACar(parkingLot,pos.getRow(),pos.getCol());
     }
 
     @Override
     public Car getValidCarInParkingHistory() {
-        CarTable carTable = new CarTable();
         return carTable.getCarByCarNo(getValidCarNumberInParkingHistory());
     }
 
@@ -345,7 +332,6 @@ public class CarParkingImpl implements CarParking{
         while (true) {
             String carNumber = dataProvider.getCarNumberForHistory();
             if(carNumber.equalsIgnoreCase("back")) return null;
-            CarTable carTable = new CarTable();
             if(carNumber.equals("")) {
                 dataPrinter.givenCarNumberEmpty();
                 dataPrinter.askingBackToMainMenu();
@@ -369,7 +355,7 @@ public class CarParkingImpl implements CarParking{
         for (CarEntryExit carEntryExit:carEntryExitMaster.getCarEntryExits()) {
             LocalTime time1 = carEntryExit.getEntryTime();
             LocalTime time2 = carEntryExit.getExitTime();
-            int[] pos = carEntryExit.getPosition();
+            CarLocation pos = carEntryExit.getPosition();
 
             dataPrinter.carParkingHistory(time1,time2,pos,carEntryExit);
         }
@@ -378,7 +364,6 @@ public class CarParkingImpl implements CarParking{
 
     @Override
     public boolean checkDuplicateCarNoInParking(String carNo) {
-        CarInParking carInParking = new CarInParking();
         if(carInParking.isCarNumberExist(carNo)) {
             dataPrinter.duplicateCarExist();
             return true;
@@ -389,7 +374,7 @@ public class CarParkingImpl implements CarParking{
     }
 
     @Override
-    public ArrayList<Billing> getBillingsByCarNo(String carNo) {
+    public ArrayList<BillingSystem> getBillingsByCarNo(String carNo) {
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(carNo);
         return carEntryExitMaster.getBillings();
     }
