@@ -1,6 +1,7 @@
 package service;
 
 import model.Car;
+import model.CarParkingPlace;
 import model.ParkingLot;
 
 public interface DataProvider {
@@ -13,7 +14,7 @@ public interface DataProvider {
 
     String getCarNumber();
 
-    String getCarDetailsConfirmation();
+    String getCarConfirmation();
 
     String getLastCarParkingConfirmation();
 
@@ -21,9 +22,9 @@ public interface DataProvider {
 
     String getFloorNumber();
 
-    String getSuggestedParkingPlaceConfirmation(int[] position);
+    String getSuggestedParkingPlaceConfirmation(int position);
 
-    String getCarParkingPlace(ParkingLot parkingLot);
+    int getCarParkingPlace(ParkingLot parkingLot);
 
     String getCarNumberToExit();
 
