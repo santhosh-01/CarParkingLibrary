@@ -10,25 +10,23 @@ public interface CarParking {
 
     boolean confirmCarDetails(Car car);
 
-    boolean checkAndSuggestLastCarParkingPlace(Car car);
+    CarLocation checkAndSuggestLastCarParkingPlace(Car car);
 
     ParkingLot suggestAndGetCarParkingLot();
 
-    int[] suggestAndGetParkingPlace(ParkingLot parkingLot);
+    CarParkingPlace suggestAndGetParkingPlace(ParkingLot parkingLot);
 
-    void parkACar(ParkingLot parkingLot, int[] position, Car car);
+    void parkACar(ParkingLot parkingLot, CarParkingPlace position, Car car);
 
     Car acceptCarDetailsToExit();
 
     boolean confirmCarDetailsForExit(Car car);
 
-    ParkingCell exitACarFromPosition(ParkingLot parkingLot, int[] pos, Car car);
+    BillingSystem generateBill(ParkingCell parkingCell, Car car);
 
-    Billing generateBill(ParkingCell parkingCell, Car car);
+    void generatePathToParkACar(ParkingLot parkingLot, CarParkingPlace position);
 
-    void generatePathToParkACar(ParkingLot parkingLot, int[] position);
-
-    void generatePathToExitACar(ParkingLot parkingLot, int[] pos);
+    void generatePathToExitACar(ParkingLot parkingLot, CarParkingPlace pos);
 
     Car getValidCarInParkingHistory();
 
@@ -38,6 +36,6 @@ public interface CarParking {
 
     boolean checkDuplicateCarNoInParking(String carNo);
 
-    ArrayList<Billing> getBillingsByCarNo(String carNo);
+    ArrayList<BillingSystem> getBillingsByCarNo(String carNo);
 
 }
