@@ -4,15 +4,15 @@ import java.time.LocalTime;
 
 public class CarEntryExit {
 
-    private LocalTime entryTime;
+    private final LocalTime entryTime;
     private LocalTime exitTime;
-    private int[] position;
-    private Billing billing;
+    private final CarLocation position;
+    private BillingSystem billing;
 
-    public CarEntryExit(LocalTime entryTime, int[] position) {
+    public CarEntryExit(LocalTime entryTime, CarLocation position) {
         this.entryTime = entryTime;
         this.position = position;
-        billing = new Billing(entryTime);
+        billing = new BillingSystem(entryTime);
     }
 
     public void setExitTime(LocalTime exitTime) {
@@ -27,15 +27,15 @@ public class CarEntryExit {
         return exitTime;
     }
 
-    public int[] getPosition() {
+    public CarLocation getPosition() {
         return position;
     }
 
-    public Billing getBilling() {
+    public BillingSystem getBilling() {
         return billing;
     }
 
-    public void setBilling(Billing billing) {
+    public void setBilling(BillingSystem billing) {
         this.billing = billing;
     }
 }
