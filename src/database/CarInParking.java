@@ -6,11 +6,7 @@ import java.util.ArrayList;
 
 public class CarInParking {
 
-    private static final ArrayList<Car> cars;
-
-    static {
-        cars = new ArrayList<>();
-    }
+    private final ArrayList<Car> cars = new ArrayList<>();
 
     public void addCars(Car car) {
         cars.add(car);
