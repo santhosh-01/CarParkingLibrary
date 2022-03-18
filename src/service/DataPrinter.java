@@ -1,9 +1,6 @@
 package service;
 
-import model.Car;
-import model.CarEntryExit;
-import model.MultiFloorCarParking;
-import model.ParkingLot;
+import model.*;
 
 import java.time.LocalTime;
 
@@ -13,9 +10,9 @@ public interface DataPrinter {
 
     void CarParkingCancelledMessage();
 
-    void LastCarParkingDetails(int[] pos, CarEntryExit carEntryExit);
+    void LastCarParkingDetails(CarLocation pos, CarEntryExit carEntryExit);
 
-    void emptyCarParkingPlace(int[] pos);
+    void emptyCarParkingPlace(CarLocation pos);
 
     void parkingConfirmation();
 
@@ -29,9 +26,6 @@ public interface DataPrinter {
 
     void invalidParkingPlace();
 
-    void generateReceipt(CarParking carParking, MultiFloorCarParking obj, ParkingLot parkingLot,
-                         int[] pos, Car car);
-
     void noCarsAvailable();
 
     void carNumberNotFound();
@@ -40,7 +34,7 @@ public interface DataPrinter {
 
     void askingBackToMainMenu();
 
-    void carParkingHistory(LocalTime time1, LocalTime time2, int[] pos, CarEntryExit carEntryExit);
+    void carParkingHistory(LocalTime time1, LocalTime time2, CarLocation pos, CarEntryExit carEntryExit);
 
     void showCarInformation(Car car);
 
