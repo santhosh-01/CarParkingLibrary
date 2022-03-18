@@ -14,8 +14,8 @@ public class MultiFloorCarParking {
         columns = prop.getColumns();
         pathWidth = prop.getPathWidth();
         path = prop.getPath();
-        Billing.setMoneyType(MoneyType.INR);
-        Billing.billingAmountPerHour = prop.getBillingAmountPerHour();
+        BillingSystem.setMoneyType(MoneyType.INR);
+        BillingSystem.billingAmountPerHour = prop.getBillingAmountPerHour();
         parkingLots = new ArrayList<>();
         setParkingLots();
     }
@@ -28,6 +28,13 @@ public class MultiFloorCarParking {
             ParkingLot parkingLot = new ParkingLot(i, rows, columns, pathWidth);
             parkingLots.add(parkingLot);
         }
+    }
+
+    public CarLocation getCarLocation(int carParkingNumber) {
+        int floorNo = ((carParkingNumber - 1)/(rows * columns));
+        if(floorNo < 0 || floorNo >floors) return null;
+        ParkingLot parkingLot = parkingLots.get(floorNo);
+        return parkingLot.getCarLocation(carParkingNumber);
     }
 
     public ArrayList<ParkingLot> getParkingLots() {
@@ -74,8 +81,8 @@ public class MultiFloorCarParking {
 
     public ParkingLot getParkingLotWithCarNumber(String carNo) {
         for (ParkingLot parkingLot:parkingLots) {
-            int[] pos = parkingLot.getCarNumberPosition(carNo);
-            if(pos[0] != -1 && pos[1] != -1) {
+            CarParkingPlace pos = parkingLot.getCarNumberPosition(carNo);
+            if(pos != null) {
                 return parkingLot;
             }
         }
