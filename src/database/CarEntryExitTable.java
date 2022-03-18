@@ -6,11 +6,7 @@ import java.util.ArrayList;
 
 public class CarEntryExitTable {
 
-    private static final ArrayList<CarEntryExitMaster> cars;
-
-    static {
-        cars = new ArrayList<>();
-    }
+    private final ArrayList<CarEntryExitMaster> cars = new ArrayList<>();
 
     public void addCar(CarEntryExitMaster car) {
         cars.add(car);
