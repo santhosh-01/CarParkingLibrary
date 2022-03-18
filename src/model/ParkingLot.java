@@ -11,6 +11,7 @@ public class ParkingLot {
     private final ArrayList<ArrayList<Cell>> mat;
     private int vacancy;
     private final int inBetweenPathWidth;
+    private static int parkingPlaceNumber = 1;
 
     public ParkingLot(int floor, int row, int col,int inBetweenPathWidth) {
         vacancy = row * col;
@@ -31,12 +32,12 @@ public class ParkingLot {
                 {
                     if(i == row - 1 || i % 3 == 0 || j == 0 || j == col - 1) {
                         PathCell pathCell = new PathCell();
-                        pathCell.setPosition((row - i) + "/" + (j + 1));
                         cells.add(pathCell);
                     }
                     else {
                         ParkingCell parkingCell = new ParkingCell();
-                        parkingCell.setPosition((row - i + 1) + "/" + (j + 1));
+                        parkingCell.setPosition(parkingPlaceNumber);
+                        parkingPlaceNumber++;
                         parkingCell.setIsParked("E");
                         cells.add(parkingCell);
                     }
@@ -52,12 +53,12 @@ public class ParkingLot {
                 {
                     if(i <= 1 || i >= row - 2 || i % 4 == 0 || i % 4 == 1 || j <= 1 || j >= col - 2) {
                         PathCell pathCell = new PathCell();
-                        pathCell.setPosition((row - i) + "/" + (j + 1));
                         cells.add(pathCell);
                     }
                     else {
                         ParkingCell parkingCell = new ParkingCell();
-                        parkingCell.setPosition((row - i + 1) + "/" + (j + 1));
+                        parkingCell.setPosition(parkingPlaceNumber);
+                        parkingPlaceNumber++;
                         parkingCell.setIsParked("E");
                         cells.add(parkingCell);
                     }
@@ -87,23 +88,18 @@ public class ParkingLot {
         return this.vacancy == 0;
     }
 
-    public int[] getFirstParkingPosition() {
-        int[] pos = new int[2];
-        pos[0] = -1;
-        pos[1] = -1;
-        outer: for(int i = 0; i < row; ++i) {
+    public int getFirstParkingPosition() {
+        for(int i = 0; i < row; ++i) {
             for (int j = 0; j < col; ++j) {
                 if(this.mat.get(i).get(j).getCellValue().equals("-")) {
-                    pos[0] = i;
-                    pos[1] = j;
-                    break outer;
+                    return mat.get(i).get(j).getPosition();
                 }
             }
         }
-        return pos;
+        return -1;
     }
 
-    public int[] getNearestParkingPosition(int r, int c) {
+    public CarParkingPlace getNearestParkingPosition(int r, int c) {
         int[][] ans = new int[row][col];
 
         for (int i = 0; i < row; i++) {
@@ -127,7 +123,7 @@ public class ParkingLot {
                     if(ans[i][j] == ctr) {
                         flag = true;
                         if (isValidEmptyParkingPlace(i, j)) {
-                            return new int[]{i,j};
+                            return new CarParkingPlace(i,j);
                         }
                     }
                 }
@@ -135,13 +131,10 @@ public class ParkingLot {
             if(!flag) break;
             ctr++;
         }
-        return new int[]{-1,-1};
+        return null;
     }
 
-    public int[] getCarNumberPosition(String CarNo) {
-        int[] pos = new int[2];
-        pos[0] = -1;
-        pos[1] = -1;
+    public CarParkingPlace getCarNumberPosition(String CarNo) {
         for(int i = 0; i < row; ++i) {
             for (int j = 0; j < col; ++j) {
                 Car car = null;
@@ -149,12 +142,11 @@ public class ParkingLot {
                     car = ((ParkingCell)this.mat.get(i).get(j)).getCar();
                 }
                 if(car != null && car.getCarNumber() != null && car.getCarNumber().equals(CarNo)) {
-                    pos[0] = i;
-                    pos[1] = j;
+                    return new CarParkingPlace(i,j);
                 }
             }
         }
-        return pos;
+        return null;
     }
 
     public void showParkingLot() {
@@ -172,8 +164,8 @@ public class ParkingLot {
         }
     }
 
-    public ParkingCell exitACar(int[] pos) {
-        ParkingCell parkingCell = ((ParkingCell)mat.get(pos[0]).get(pos[1]));
+    public ParkingCell exitACar(CarParkingPlace pos) {
+        ParkingCell parkingCell = ((ParkingCell)mat.get(pos.getRow()).get(pos.getCol()));
         parkingCell.setCarExitTime(LocalTime.now());
         ParkingCell parkingCell1 = new ParkingCell(parkingCell);
         parkingCell.setCar(null);
@@ -194,7 +186,7 @@ public class ParkingLot {
                 if(mat.get(i).get(j).getCellValue().equals("X")) {
                     System.out.printf("%8s ",mat.get(i).get(j).getCellValue());
                 }
-                else System.out.printf("%8s ",(i + 1) + "/" + (j + 1) + "-" +
+                else System.out.printf("%8s ",mat.get(i).get(j).getPosition() + "-" +
                         ((ParkingCell)mat.get(i).get(j)).getIsParked());
             }
             System.out.println();
@@ -213,7 +205,7 @@ public class ParkingLot {
             for(int j = 0; j < col; ++j)
             {
                 if(mat.get(i).get(j).getCellValue().equals("X")) {
-                    System.out.printf("%8s ",mat.get(i).get(j).getPosition() +
+                    System.out.printf("%8s ", mat.get(i).get(j).getCellValue() +
                             ((PathCell)mat.get(i).get(j)).getDirection());
                 }
                 else {
@@ -427,5 +419,17 @@ public class ParkingLot {
     public boolean isValidEmptyParkingPlace(int r, int c) {
         return (isRowAndColumnInRange(r,c) &&
                 mat.get(r).get(c).getCellValue().equals("-"));
+    }
+
+    public CarLocation getCarLocation(int carParkingNumber) {
+        for(int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+                Cell cell = mat.get(i).get(j);
+                if(cell.getPosition() == carParkingNumber) {
+                    return new CarLocation(i,j,floorNo);
+                }
+            }
+        }
+        return null;
     }
 }
