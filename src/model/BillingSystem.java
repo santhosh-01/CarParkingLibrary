@@ -1,5 +1,7 @@
 package model;
 
+import util.TimeFormat;
+
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -62,15 +64,11 @@ public class BillingSystem {
         else return ChronoUnit.SECONDS.between(this.carEntryTime, carExitTime);
     }
 
-    private String getTime(LocalTime time) {
-        return String.format("%02d:%02d:%02d",time.getHour(),time.getMinute(),time.getSecond());
-    }
-
     @Override
     public String toString() {
         return "{id=" + id +
-                ", carEntryTime=" + getTime(carEntryTime) +
-                ", carExitTime=" + getTime(carExitTime==null?LocalTime.of(0,0,0):carExitTime) +
+                ", carEntryTime=" + TimeFormat.getTime(carEntryTime) +
+                ", carExitTime=" + TimeFormat.getTime(carExitTime==null?LocalTime.of(0,0,0):carExitTime) +
                 String.format(", parkingTimeInSeconds=%d seconds",calculateCarParkedInSeconds()) +
                 String.format(", bill=%.2f %s}",getBill(), BillingSystem.moneyAbbr);
     }
