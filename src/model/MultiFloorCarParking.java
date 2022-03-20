@@ -30,10 +30,9 @@ public class MultiFloorCarParking {
         }
     }
 
-    public CarLocation getCarLocation(int carParkingNumber) {
+    public CarLocation getCarLocation(ParkingLot parkingLot, int carParkingNumber) {
         int floorNo = ((carParkingNumber - 1)/(rows * columns));
-        if(floorNo < 0 || floorNo >floors) return null;
-        ParkingLot parkingLot = parkingLots.get(floorNo);
+        if(floorNo != parkingLot.getFloorNo()) return null;
         return parkingLot.getCarLocation(carParkingNumber);
     }
 
