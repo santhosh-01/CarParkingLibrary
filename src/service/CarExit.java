@@ -8,13 +8,10 @@ import model.ParkingLot;
 
 public class CarExit {
 
-    private final CarInParking carInParking;
-
-    public CarExit(CarInParking carInParking) {
-        this.carInParking = carInParking;
+    public CarExit() {
     }
 
-    public ParkingCell exitACarFromPosition(ParkingLot parkingLot, CarParkingPlace pos, Car car) {
+    public ParkingCell exitACarFromPosition(CarInParking carInParking, ParkingLot parkingLot, CarParkingPlace pos, Car car) {
         ParkingCell parkingCell = parkingLot.exitACar(pos);
         carInParking.removeCar(car.getCarNumber());
         return parkingCell;
