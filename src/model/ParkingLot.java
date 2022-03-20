@@ -149,7 +149,7 @@ public class ParkingLot {
         return null;
     }
 
-    public void showParkingLot() {
+    public void showParkingLot(boolean isDescriptionNeeded) {
         System.out.println();
         for(int i = 0; i < row; ++i)
         {
@@ -161,6 +161,11 @@ public class ParkingLot {
                 else System.out.printf("%8s ",mat.get(i).get(j).getCellValue());
             }
             System.out.println();
+        }
+        if(isDescriptionNeeded) {
+            System.out.println("\nHere, All Path Cells are represented by 'X'");
+            System.out.println("All Empty Parking Places represented by '-'");
+            System.out.println("Parking Place with Car Parked is represented by CarNumber");
         }
     }
 
@@ -192,8 +197,9 @@ public class ParkingLot {
             System.out.println();
         }
         if(isDescriptionNeeded) {
-            System.out.println("\nHere, All Parking Places represented by R/C-E or R/C-P");
-            System.out.println("R means Rth Rows, C means Cth Column");
+            System.out.println("\nHere, All Path Cells are represented by 'X'");
+            System.out.println("All Parking Places represented by [ParkingSpotNumber-E] or [ParkingSpotNumber-P]");
+            System.out.println("ParkingSpotNumber is the Number to represent the parking place");
             System.out.println("E stands for Empty, P stands for Parked");
         }
     }
