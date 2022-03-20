@@ -215,15 +215,15 @@ public class CarParkingImpl implements CarParking{
         while (true) {
             String choice = dataProvider.getSuggestedParkingPlaceConfirmation(position);
             if(choice.equalsIgnoreCase("yes")) {
-                CarLocation carLocation = obj.getCarLocation(position);
+                CarLocation carLocation = obj.getCarLocation(parkingLot,position);
                 return carLocation.getCarParkingPlace();
             }
             else if(choice.equalsIgnoreCase("no")){
                 while (true) {
                     int num = dataProvider.getCarParkingPlace(parkingLot);
-                    CarLocation location = obj.getCarLocation(num);
+                    CarLocation location = obj.getCarLocation(parkingLot,num);
                     if(location == null) {
-                        System.out.println("Given Car Position is Invalid");
+                        System.out.println("\nGiven Car Position is Invalid");
                         continue;
                     }
                     CarParkingPlace carParkingPlace = location.getCarParkingPlace();
@@ -267,7 +267,7 @@ public class CarParkingImpl implements CarParking{
     private Car getValidCarFromParking() {
         while (true) {
             String carNo = dataProvider.getCarNumberToExit();
-            if(carNo.equalsIgnoreCase("back")) return null;
+            if(carNo.equalsIgnoreCase("b")) return null;
             Car car = carTable.getCarByCarNo(carNo);
             if(car == null) {
                 dataPrinter.carNumberNotFound();
@@ -331,7 +331,7 @@ public class CarParkingImpl implements CarParking{
     public String getValidCarNumberInParkingHistory() {
         while (true) {
             String carNumber = dataProvider.getCarNumberForHistory();
-            if(carNumber.equalsIgnoreCase("back")) return null;
+            if(carNumber.equalsIgnoreCase("b")) return null;
             if(carNumber.equals("")) {
                 dataPrinter.givenCarNumberEmpty();
                 dataPrinter.askingBackToMainMenu();
