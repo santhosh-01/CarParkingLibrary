@@ -66,10 +66,9 @@ public class BillingSystem {
 
     @Override
     public String toString() {
-        return "{id=" + id +
-                ", carEntryTime=" + TimeFormat.getTime(carEntryTime) +
-                ", carExitTime=" + TimeFormat.getTime(carExitTime==null?LocalTime.of(0,0,0):carExitTime) +
-                String.format(", parkingTimeInSeconds=%d seconds",calculateCarParkedInSeconds()) +
-                String.format(", bill=%.2f %s}",getBill(), BillingSystem.moneyAbbr);
+        return "carEntryTime=" + TimeFormat.getTime(carEntryTime) +
+                "\ncarExitTime=" + TimeFormat.getTime(carExitTime==null?LocalTime.of(0,0,0):carExitTime) +
+                String.format("\nparkingTimeInSeconds=%d seconds",calculateCarParkedInSeconds()) +
+                String.format("\nbill=%.2f %s",getBill(), BillingSystem.moneyAbbr);
     }
 }
