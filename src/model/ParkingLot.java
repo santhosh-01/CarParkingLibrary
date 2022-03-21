@@ -220,9 +220,8 @@ public class ParkingLot {
             }
             System.out.println();
         }
-        System.out.println("\nHere, Car path represented by R/C{D}");
-        System.out.println("R means Rth Rows, C means Cth Column and " +
-                "D represents Direction that the car can travel to reach parking place");
+        System.out.println("\nHere, Car path represented by X{D}");
+        System.out.println("D represents Direction that the car can travel to reach parking place");
     }
 
     public void setDetailedLeftEntryPath(int r, int c) {
