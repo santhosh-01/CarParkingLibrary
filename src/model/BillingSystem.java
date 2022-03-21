@@ -7,8 +7,6 @@ import java.time.temporal.ChronoUnit;
 
 public class BillingSystem {
 
-    private final int id;
-    private static int nextId = 1001;
     private final LocalTime carEntryTime;
     private LocalTime carExitTime;
     public static MoneyType moneyType;
@@ -17,9 +15,7 @@ public class BillingSystem {
     private double bill;
 
     public BillingSystem(LocalTime carEntryTime) {
-        this.id = nextId;
         this.carEntryTime = carEntryTime;
-        nextId ++;
     }
 
     public static void setMoneyType(MoneyType moneyType) {
