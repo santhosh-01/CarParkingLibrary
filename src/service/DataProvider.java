@@ -24,7 +24,7 @@ public interface DataProvider {
 
     String getSuggestedParkingPlaceConfirmation(int position);
 
-    int getCarParkingPlace(ParkingLot parkingLot);
+    String getCarParkingPlace(ParkingLot parkingLot);
 
     String getCarNumberToExit();
 

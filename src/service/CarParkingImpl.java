@@ -223,10 +223,14 @@ public class CarParkingImpl implements CarParking{
             }
             else if(choice.equalsIgnoreCase("no")){
                 while (true) {
-                    int num = dataProvider.getCarParkingPlace(parkingLot);
-                    CarLocation location = obj.getCarLocation(parkingLot,num);
+                    String num = dataProvider.getCarParkingPlace(parkingLot);
+                    int rows = obj.rows;
+                    int columns = obj.columns;
+                    int floorNo = parkingLot.getFloorNo();
+                    int n = Validator.validateInteger(num,((rows*columns)*floorNo)+1,
+                            (rows*columns)*(floorNo+1));
+                    CarLocation location = obj.getCarLocation(parkingLot,n);
                     if(location == null) {
-                        System.out.println("\nGiven Car Position is Invalid");
                         continue;
                     }
                     CarParkingPlace carParkingPlace = location.getCarParkingPlace();
