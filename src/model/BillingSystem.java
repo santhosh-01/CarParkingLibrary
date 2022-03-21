@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 public class BillingSystem {
+
     private final LocalTime carEntryTime;
     private LocalTime carExitTime;
     public static MoneyType moneyType;
