@@ -33,4 +33,8 @@ public class CarLocation {
     public void setFloorNo(int floorNo) {
         this.floorNo = floorNo;
     }
+
+    public void setCarParkingSpotNumber(int position) {
+        this.carParkingPlace.setCarParkingSpotNumber(position);
+    }
 }

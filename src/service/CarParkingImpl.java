@@ -163,6 +163,9 @@ public class CarParkingImpl implements CarParking{
         CarParkingPlace position1 = parkingLot.getNearestParkingPosition(pos.getCarParkingPlace().getRow()-1,
                 pos.getCarParkingPlace().getCol()-1);
         position.setCarParkingPlace(position1);
+        ParkingCell parkingCell = parkingLot.getParkingCellByPosition(position1.getRow(),
+                position1.getCol());
+        position.setCarParkingSpotNumber(parkingCell.getPosition());
         position.setFloorNo(pos.getFloorNo());
         if(position1 != null) {
             dataPrinter.emptyCarParkingPlace(position);
