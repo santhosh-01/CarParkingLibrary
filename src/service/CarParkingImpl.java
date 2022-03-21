@@ -250,7 +250,8 @@ public class CarParkingImpl implements CarParking{
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(car.getCarNumber());
         ParkingCell parkingCell = parkingLot.getParkingCellByPosition(position.getRow(),position.getCol());
         CarEntryExit carEntryExit = new CarEntryExit(parkingCell.getParkedTime(),
-                new CarLocation(position.getRow()+1,position.getCol()+1,parkingLot.getFloorNo()));
+                new CarLocation(position.getRow()+1,position.getCol()+1,parkingCell.getPosition(),
+                        parkingLot.getFloorNo()));
         carEntryExitMaster.addEntryExit(carEntryExit);
         carEntryExitMaster.addBilling(carEntryExit.getBilling());
     }
@@ -296,6 +297,12 @@ public class CarParkingImpl implements CarParking{
                 dataPrinter.yesOrNoInvalidMessage();
             }
         }
+    }
+
+    public ParkingCell exitACarFromPosition(ParkingLot parkingLot, CarParkingPlace pos, Car car) {
+        ParkingCell parkingCell = parkingLot.exitACar(pos);
+        carInParking.removeCar(car.getCarNumber());
+        return parkingCell;
     }
 
     @Override

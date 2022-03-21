@@ -22,6 +22,8 @@ public interface CarParking {
 
     boolean confirmCarDetailsForExit(Car car);
 
+    ParkingCell exitACarFromPosition(ParkingLot parkingLot, CarParkingPlace pos, Car car);
+
     BillingSystem generateBill(ParkingCell parkingCell, Car car);
 
     void generatePathToParkACar(ParkingLot parkingLot, CarParkingPlace position);

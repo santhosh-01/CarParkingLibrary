@@ -432,7 +432,7 @@ public class ParkingLot {
             for (int j = 0; j < col; ++j) {
                 Cell cell = mat.get(i).get(j);
                 if(cell.getPosition() == carParkingNumber) {
-                    return new CarLocation(i,j,floorNo);
+                    return new CarLocation(i,j,mat.get(i).get(j).getPosition(),floorNo);
                 }
             }
         }

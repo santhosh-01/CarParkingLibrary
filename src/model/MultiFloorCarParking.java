@@ -8,7 +8,7 @@ public class MultiFloorCarParking {
     public String path;
     private ArrayList<ParkingLot> parkingLots;
 
-    public MultiFloorCarParking(PropertiesClass prop) {
+    public MultiFloorCarParking(PropertiesDataClass prop) {
         floors = prop.getFloors();
         rows = prop.getRows();
         columns = prop.getColumns();

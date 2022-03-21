@@ -13,8 +13,8 @@ public class CarLocation {
         this.floorNo = floorNo;
     }
 
-    public CarLocation(int row, int col, int floorNo) {
-        this.carParkingPlace = new CarParkingPlace(row,col);
+    public CarLocation(int row, int col, int carParkingSpotNumber, int floorNo) {
+        this.carParkingPlace = new CarParkingPlace(row,col,carParkingSpotNumber);
         this.floorNo = floorNo;
     }
 
