@@ -19,13 +19,4 @@ public class CarEntryExitTable {
         return null;
     }
 
-    public boolean isCarExistByCarNo(String carNo) {
-        for (CarEntryExitMaster car : cars) {
-            if(car.getCarNumber().equals(carNo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

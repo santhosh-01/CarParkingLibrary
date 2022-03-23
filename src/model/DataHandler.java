@@ -1,9 +1,10 @@
-package service;
+package model;
 
 import database.CarEntryExitTable;
 import database.CarInParking;
 import database.CarTable;
-import model.*;
+import service.DataPrinter;
+import service.DataProvider;
 import util.Validator;
 
 import java.util.ArrayList;

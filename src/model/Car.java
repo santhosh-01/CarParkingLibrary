@@ -24,15 +24,15 @@ public class Car {
         return carModel;
     }
 
-    public void setCarNumber(String carNumber) {
+    protected void setCarNumber(String carNumber) {
         this.carNumber = carNumber;
     }
 
-    public void setCarBrand(String carBrand) {
+    protected void setCarBrand(String carBrand) {
         this.carBrand = carBrand;
     }
 
-    public void setCarModel(String carModel) {
+    protected void setCarModel(String carModel) {
         this.carModel = carModel;
     }
 

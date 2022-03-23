@@ -18,7 +18,7 @@ public class BillingSystem {
         this.carEntryTime = carEntryTime;
     }
 
-    public static void setMoneyType(MoneyType moneyType) {
+    protected static void setMoneyType(MoneyType moneyType) {
         BillingSystem.moneyType = moneyType;
         switch (moneyType) {
             case INR -> moneyAbbr = "INR";
