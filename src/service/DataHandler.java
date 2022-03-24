@@ -1,8 +1,11 @@
-package model;
+package service;
 
 import database.CarEntryExitTable;
 import database.CarInParking;
 import database.CarTable;
+import model.Car;
+import model.MultiFloorCarParking;
+import model.ParkingLot;
 import service.DataPrinter;
 import service.DataProvider;
 import util.Validator;
