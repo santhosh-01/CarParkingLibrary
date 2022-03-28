@@ -2,8 +2,8 @@ package model;
 
 public class CarParkingPlace {
 
-    private int row;
-    private int col;
+    private final int row;
+    private final int col;
     private int carParkingSpotNumber;
 
     public CarParkingPlace(int row, int col) {

@@ -59,9 +59,4 @@ public class ParkingCell extends Cell{
         return carExitTime;
     }
 
-    public long calculateCarParkedInSeconds() {
-        LocalTime carExitTime = this.getCarExitTime();
-        return ChronoUnit.SECONDS.between(this.getParkedTime(), carExitTime);
-    }
-
 }

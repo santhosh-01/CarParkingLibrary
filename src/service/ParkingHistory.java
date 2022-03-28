@@ -2,10 +2,7 @@ package service;
 
 import database.CarEntryExitTable;
 import database.CarTable;
-import model.Car;
-import model.CarEntryExit;
-import model.CarEntryExitMaster;
-import model.CarLocation;
+import model.*;
 
 import java.time.LocalTime;
 
@@ -58,6 +55,13 @@ public class ParkingHistory {
             dataPrinter.carParkingHistory(time1,time2,pos,carEntryExit);
         }
         return true;
+    }
+
+    public CarEntryExit getLastCarEntryExitByCar(ParkingCell parkingCell, Car car) {
+        CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(car.getCarNumber());
+        CarEntryExit carEntryExit = carEntryExitMaster.getLastCarEntryExit();
+        carEntryExit.setExitTime(parkingCell.getCarExitTime());
+        return carEntryExit;
     }
 
 }

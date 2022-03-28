@@ -14,6 +14,8 @@ public class BillingSystem {
     public static String moneyAbbr;
     private double bill;
 
+    private final double SECONDS = 3600.0;
+
     public BillingSystem(LocalTime carEntryTime) {
         this.carEntryTime = carEntryTime;
     }
@@ -27,7 +29,7 @@ public class BillingSystem {
     }
 
     private double calculateBill(long seconds) {
-        double billingAmountPerSecond = billingAmountPerHour/(60.0 * 60.0);
+        double billingAmountPerSecond = billingAmountPerHour/SECONDS;
         return billingAmountPerSecond * seconds;
     }
 

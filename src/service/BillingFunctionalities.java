@@ -13,12 +13,11 @@ public class BillingFunctionalities {
         this.carEntryExitTable = carEntryExitTable;
     }
 
-    public BillingSystem generateBill(ParkingCell parkingCell, Car car) {
-        CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(car.getCarNumber());
-        CarEntryExit carEntryExit = carEntryExitMaster.getLastCarEntryExit();
-        carEntryExit.setExitTime(parkingCell.getCarExitTime());
+    public BillingSystem generateBill(CarEntryExit carEntryExit, ParkingCell parkingCell, Car car) {
         BillingSystem billing = carEntryExit.getBilling();
         billing.setCarExitTime(parkingCell.getCarExitTime());
+        ArrayList<Integer> arr1 = new ArrayList<>();
+        ArrayList<Integer> arr2 = new ArrayList<>(arr1);
         return billing;
     }
 

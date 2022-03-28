@@ -6,7 +6,7 @@ public class MultiFloorCarParking {
 
     public int floors, rows, columns, pathWidth;
     public String path;
-    private ArrayList<ParkingLot> parkingLots;
+    private final ArrayList<ParkingLot> parkingLots;
 
     public MultiFloorCarParking(PropertiesDataClass prop) {
         floors = prop.getFloors();
@@ -18,9 +18,6 @@ public class MultiFloorCarParking {
         BillingSystem.billingAmountPerHour = prop.getBillingAmountPerHour();
         parkingLots = new ArrayList<>();
         setParkingLots();
-    }
-
-    public MultiFloorCarParking() {
     }
 
     private void setParkingLots() {
