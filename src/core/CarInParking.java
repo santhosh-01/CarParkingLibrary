@@ -1,18 +1,17 @@
-package database;
-
-import model.Car;
+package core;
 
 import java.util.ArrayList;
 
+// DB Class
 public class CarInParking {
 
     private final ArrayList<Car> cars = new ArrayList<>();
 
-    public void addCars(Car car) {
+    protected void addCars(Car car) {
         cars.add(car);
     }
 
-    public boolean isCarNumberExist(String carNo) {
+    protected boolean isCarNumberExist(String carNo) {
         for (Car car:cars) {
             if(car.getCarNumber().equals(carNo)) {
                 return true;
@@ -21,7 +20,7 @@ public class CarInParking {
         return false;
     }
 
-    public void removeCar(String carNo) {
+    protected void removeCar(String carNo) {
         for (Car car:cars) {
             if(car.getCarNumber().equals(carNo)) {
                 cars.remove(car);

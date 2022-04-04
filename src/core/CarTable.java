@@ -1,14 +1,13 @@
-package database;
-
-import model.Car;
+package core;
 
 import java.util.ArrayList;
 
+// DB Class
 public class CarTable {
 
     private final ArrayList<Car> cars = new ArrayList<>();
 
-    public boolean isCarNumberExist(String carNo) {
+    protected boolean isCarNumberExist(String carNo) {
         for (Car car:cars) {
             if(car.getCarNumber().equals(carNo)) {
                 return true;
@@ -17,11 +16,11 @@ public class CarTable {
         return false;
     }
 
-    public void addCar(Car car) {
+    protected void addCar(Car car) {
         cars.add(car);
     }
 
-    public Car getCarByCarNo(String carNo) {
+    protected Car getCarByCarNo(String carNo) {
         Car res = null;
         for (Car car:cars) {
             if(car.getCarNumber().equals(carNo)) {

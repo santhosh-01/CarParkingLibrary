@@ -1,4 +1,4 @@
-package model;
+package core;
 
 import java.util.ArrayList;
 
@@ -8,33 +8,33 @@ public class CarEntryExitMaster {
     private final ArrayList<CarEntryExit> carEntryExits;
     private final ArrayList<BillingSystem> billings;
 
-    public CarEntryExitMaster(String carNumber) {
+    protected CarEntryExitMaster(String carNumber) {
         this.carNumber = carNumber;
         this.carEntryExits = new ArrayList<>();
         this.billings = new ArrayList<>();
     }
 
-    public String getCarNumber() {
+    protected String getCarNumber() {
         return carNumber;
     }
 
-    public void addEntryExit(CarEntryExit car) {
-        carEntryExits.add(car);
-    }
-
-    public ArrayList<CarEntryExit> getCarEntryExits() {
+    protected ArrayList<CarEntryExit> getCarEntryExits() {
         return carEntryExits;
     }
 
-    public CarEntryExit getLastCarEntryExit() {
+    protected CarEntryExit getLastCarEntryExit() {
         return carEntryExits.get(carEntryExits.size() - 1);
     }
 
-    public void addBilling(BillingSystem billing) {
-        this.billings.add(billing);
+    protected ArrayList<BillingSystem> getBillings() {
+        return billings;
     }
 
-    public ArrayList<BillingSystem> getBillings() {
-        return billings;
+    protected void addEntryExit(CarEntryExit car) {
+        carEntryExits.add(car);
+    }
+
+    protected void addBilling(BillingSystem billing) {
+        this.billings.add(billing);
     }
 }

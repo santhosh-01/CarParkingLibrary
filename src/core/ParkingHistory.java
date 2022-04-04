@@ -1,10 +1,7 @@
-package service;
-
-import database.CarEntryExitTable;
-import database.CarTable;
-import model.*;
+package core;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class ParkingHistory {
 
@@ -62,6 +59,11 @@ public class ParkingHistory {
         CarEntryExit carEntryExit = carEntryExitMaster.getLastCarEntryExit();
         carEntryExit.setExitTime(parkingCell.getCarExitTime());
         return carEntryExit;
+    }
+
+    public ArrayList<BillingSystem> getBillingsByCarNo(String carNo) {
+        CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(carNo);
+        return carEntryExitMaster.getBillings();
     }
 
 }

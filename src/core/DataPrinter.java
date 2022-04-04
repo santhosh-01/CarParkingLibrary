@@ -1,18 +1,17 @@
-package service;
-
-import model.*;
+package core;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public interface DataPrinter {
 
-    void showCarDetails(String carNo, String carBrand, String carModel);
+    void carDetailsConfirmation(String carInfoUpdateMenu);
 
     void CarParkingCancelledMessage();
 
-    void LastCarParkingDetails(CarLocation pos, CarEntryExit carEntryExit);
+    void LastCarParkingDetails(int carParkingSpotNumber, int floorNo, CarEntryExit carEntryExit);
 
-    void emptyCarParkingPlace(CarLocation pos);
+    void emptyCarParkingPlace(int carParkingSpotNumber, int floorNo);
 
     void parkingConfirmation();
 
@@ -20,9 +19,7 @@ public interface DataPrinter {
 
     void parkingIsFullInFloor(int floor);
 
-    void printParkingAvailableFloors(MultiFloorCarParking obj);
-
-    void askCorrectFormatOfParkingPlace();
+    void printParkingAvailableFloors(ArrayList<Integer> indexArray);
 
     void invalidParkingPlace();
 
@@ -35,8 +32,6 @@ public interface DataPrinter {
     void askingBackToMainMenu();
 
     void carParkingHistory(LocalTime time1, LocalTime time2, CarLocation pos, CarEntryExit carEntryExit);
-
-    void showCarInformation(Car car);
 
     void duplicateCarExist();
 

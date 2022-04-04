@@ -1,4 +1,4 @@
-package model;
+package core;
 
 public class PathCell extends Cell{
 
@@ -9,11 +9,11 @@ public class PathCell extends Cell{
         this.direction = "";
     }
 
-    public String getDirection() {
+    protected String getDirection() {
         return direction;
     }
 
-    public void setDirection(String direction) {
+    protected void setDirection(String direction) {
         this.direction = direction;
     }
 }

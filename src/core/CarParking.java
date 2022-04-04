@@ -1,45 +1,36 @@
-package service;
-
-import database.CarEntryExitTable;
-import database.CarInParking;
-import database.CarTable;
-import model.*;
-import util.OrdinalNumber;
-import util.Validator;
+package core;
 
 import java.util.ArrayList;
 
-public class CarParking{
+public class CarParking {
 
     private final MultiFloorCarParking obj;
     private final ArrayList<ParkingLot> arr;
     private final DataProvider dataProvider;
     private final DataPrinter dataPrinter;
 
-    private final CarTable carTable;
     private final CarInParking carInParking;
     private final CarEntryExitTable carEntryExitTable;
 
     public CarParking(MultiFloorCarParking obj, DataProvider dataProvider, DataPrinter dataPrinter,
-                      CarTable carTable, CarInParking carInParking, CarEntryExitTable carEntryExitTable) {
+                      CarInParking carInParking, CarEntryExitTable carEntryExitTable) {
         this.obj = obj;
         this.arr = obj.getParkingLots();
         this.dataProvider = dataProvider;
         this.dataPrinter = dataPrinter;
-        this.carTable = carTable;
         this.carInParking = carInParking;
         this.carEntryExitTable = carEntryExitTable;
     }
 
     private void showPathToParkACar(ParkingLot parkingLot, int row, int col) {
-        String path = obj.path;
-        if(path.equals("L")) {
+        String driverSide = obj.getDriverSide();
+        if(driverSide.equals("L")) {
             parkingLot.setDetailedLeftEntryPath(row, col);
         }
         else {
             parkingLot.setDetailedEntryPath(row, col);
         }
-        parkingLot.showDetailedPath();
+        System.out.println(parkingLot.getDetailedPath());
         parkingLot.removeDirections();
     }
 
@@ -49,41 +40,36 @@ public class CarParking{
         CarLocation pos = carEntryExit.getPosition();
         ParkingLot parkingLot = arr.get(pos.getFloorNo());
 
-        dataPrinter.LastCarParkingDetails(pos,carEntryExit);
+        dataPrinter.LastCarParkingDetails(pos.getCarParkingSpot().getCarParkingSpotNumber(),pos.getFloorNo(),carEntryExit);
 
         if(obj.getLowestFloorWithVacancy()<pos.getFloorNo()) {
             System.out.println("\nBut Empty Parking Place is available at lower floor");
             return null;
         }
 
-        CarLocation position = new CarLocation();
-        CarParkingPlace position1 = parkingLot.getNearestParkingPosition(pos.getCarParkingPlace().getRow()-1,
-                pos.getCarParkingPlace().getCol()-1);
-        position.setCarParkingPlace(position1);
+        CarParkingSpot position1 = parkingLot.getNearestParkingSpot(pos.getCarParkingSpot().getRow()-1,
+                pos.getCarParkingSpot().getCol()-1);
         ParkingCell parkingCell = parkingLot.getParkingCellByPosition(position1.getRow(),
                 position1.getCol());
-        position.setCarParkingSpotNumber(parkingCell.getPosition());
+        CarLocation position = new CarLocation(position1,parkingCell.getParkingSpotNumber());
+        CarParkingSpot carParkingSpot = position.getCarParkingSpot();
+        carParkingSpot.setCarParkingSpotNumber(parkingCell.getParkingSpotNumber());
         position.setFloorNo(pos.getFloorNo());
-        if(position1 != null) {
-            dataPrinter.emptyCarParkingPlace(position);
-            dataPrinter.parkingConfirmation();
-            while (true) {
-                String choice = dataProvider.getLastCarParkingConfirmation();
-                if(choice.equalsIgnoreCase("yes")) {
-                    return position;
-                }
-                else if(choice.equalsIgnoreCase("no")) {
-                    return null;
-                }
-                else {
-                    dataPrinter.yesOrNoInvalidMessage();
-                }
+
+        dataPrinter.emptyCarParkingPlace(position.getCarParkingSpot().getCarParkingSpotNumber(),position.getFloorNo());
+        dataPrinter.parkingConfirmation();
+        while (true) {
+            String choice = dataProvider.getLastCarParkingConfirmation();
+            if(choice.equalsIgnoreCase("yes")) {
+                return position;
+            }
+            else if(choice.equalsIgnoreCase("no")) {
+                return null;
+            }
+            else {
+                dataPrinter.yesOrNoInvalidMessage();
             }
         }
-        else {
-            dataPrinter.parkingIsFullInFloor(pos.getFloorNo());
-        }
-        return null;
     }
 
     private CarEntryExit checkAndGetLastCarEntryExit(Car car) {
@@ -108,9 +94,9 @@ public class CarParking{
             }
             else if(choice.equalsIgnoreCase("no")){
                 while (true) {
-                    dataPrinter.printParkingAvailableFloors(obj);
+                    dataPrinter.printParkingAvailableFloors(obj.getParkingAvailableFloors());
                     String floorNumber = dataProvider.getFloorNumber();
-                    int floorNo = Validator.validateInteger(floorNumber,0,obj.floors-1);
+                    int floorNo = Validator.validateInteger(floorNumber,0,obj.getFloors()-1);
                     if(floorNo == -1) continue;
                     return arr.get(floorNo);
                 }
@@ -121,29 +107,29 @@ public class CarParking{
         }
     }
 
-    public CarParkingPlace suggestAndGetParkingPlace(ParkingLot parkingLot) {
-        int position = parkingLot.getFirstParkingPosition();
+    public CarParkingSpot suggestAndGetParkingSpot(ParkingLot parkingLot) {
+        int position = parkingLot.getFirstParkingSpotNumber();
         while (true) {
             String choice = dataProvider.getSuggestedParkingPlaceConfirmation(position);
             if(choice.equalsIgnoreCase("yes")) {
-                CarLocation carLocation = obj.getCarLocation(parkingLot,position);
-                return carLocation.getCarParkingPlace();
+                return parkingLot.getCarLocation(position);
             }
             else if(choice.equalsIgnoreCase("no")){
                 while (true) {
-                    String num = dataProvider.getCarParkingPlace(parkingLot);
-                    int rows = obj.rows;
-                    int columns = obj.columns;
+                    String num = dataProvider.takeCarParkingSpotInput(parkingLot.getFloorNo(),
+                            parkingLot.getModifiedParkingLotMap(true));
+                    int rows = obj.getRows();
+                    int columns = obj.getColumns();
                     int floorNo = parkingLot.getFloorNo();
                     int n = Validator.validateInteger(num,((rows*columns)*floorNo)+1,
                             (rows*columns)*(floorNo+1));
-                    CarLocation location = obj.getCarLocation(parkingLot,n);
-                    if(location == null) {
+                    if(n == -1) continue;
+                    CarParkingSpot carParkingSpot = parkingLot.getCarLocation(n);
+                    if(carParkingSpot == null) {
                         continue;
                     }
-                    CarParkingPlace carParkingPlace = location.getCarParkingPlace();
-                    if(parkingLot.isValidEmptyParkingPlace(carParkingPlace.getRow(), carParkingPlace.getCol())) {
-                        return new CarParkingPlace(carParkingPlace.getRow(),carParkingPlace.getCol());
+                    if(parkingLot.isValidEmptyParkingPlace(carParkingSpot.getRow(), carParkingSpot.getCol())) {
+                        return carParkingSpot;
                     }
                     else {
                         dataPrinter.invalidParkingPlace();
@@ -156,24 +142,24 @@ public class CarParking{
         }
     }
 
-    public void parkACar(ParkingLot parkingLot, CarParkingPlace position, Car car) {
-        parkingLot.parkCarAtPosition(car, position.getRow(), position.getCol());
+    public void parkACar(ParkingLot parkingLot, CarParkingSpot carParkingSpot, Car car) {
+        parkingLot.parkCarAtPosition(car, carParkingSpot.getRow(), carParkingSpot.getCol());
 
         carInParking.addCars(car);
 
         CarEntryExitMaster carEntryExitMaster = carEntryExitTable.getCarByCarNumber(car.getCarNumber());
-        ParkingCell parkingCell = parkingLot.getParkingCellByPosition(position.getRow(),position.getCol());
+        ParkingCell parkingCell = parkingLot.getParkingCellByPosition(carParkingSpot.getRow(),carParkingSpot.getCol());
         CarEntryExit carEntryExit = new CarEntryExit(parkingCell.getParkedTime(),
-                new CarLocation(position.getRow()+1,position.getCol()+1,parkingCell.getPosition(),
+                new CarLocation(carParkingSpot.getRow()+1,carParkingSpot.getCol()+1,parkingCell.getParkingSpotNumber(),
                         parkingLot.getFloorNo()));
         carEntryExitMaster.addEntryExit(carEntryExit);
         carEntryExitMaster.addBilling(carEntryExit.getBilling());
     }
 
-    public void generatePathToParkACar(ParkingLot parkingLot, CarParkingPlace position) {
+    public void generatePathToParkACar(ParkingLot parkingLot, CarParkingSpot carParkingSpot) {
         System.out.println("\nDetailed Path to park the car in the given parking place " +
-                "at " + OrdinalNumber.getOrdinalNo(parkingLot.getFloorNo()) + " floor");
-        showPathToParkACar(parkingLot,position.getRow(),position.getCol());
+                "at " + OrdinalNumber.getOrdinalNo(parkingLot.getFloorNo()) + " floor\n");
+        showPathToParkACar(parkingLot,carParkingSpot.getRow(),carParkingSpot.getCol());
     }
 
     public boolean checkDuplicateCarNoInParking(String carNo) {

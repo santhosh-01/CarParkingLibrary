@@ -1,4 +1,4 @@
-package model;
+package core;
 
 public class Car {
 
@@ -6,7 +6,7 @@ public class Car {
     private String carBrand;
     private String carModel;
 
-    public Car(String carNumber, String carBrand, String carModel) {
+    Car(String carNumber, String carBrand, String carModel) {
         this.carNumber = carNumber;
         this.carBrand = carBrand;
         this.carModel = carModel;
@@ -24,15 +24,15 @@ public class Car {
         return carModel;
     }
 
-    public void setCarNumber(String carNumber) {
+    protected void setCarNumber(String carNumber) {
         this.carNumber = carNumber;
     }
 
-    public void setCarBrand(String carBrand) {
+    protected void setCarBrand(String carBrand) {
         this.carBrand = carBrand;
     }
 
-    public void setCarModel(String carModel) {
+    protected void setCarModel(String carModel) {
         this.carModel = carModel;
     }
 

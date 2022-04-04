@@ -1,17 +1,17 @@
-package model;
+package core;
 
-public class CarParkingPlace {
+public class CarParkingSpot {
 
     private final int row;
     private final int col;
     private int carParkingSpotNumber;
 
-    public CarParkingPlace(int row, int col) {
+    protected CarParkingSpot(int row, int col) {
         this.row = row;
         this.col = col;
     }
 
-    public CarParkingPlace(int row, int col, int carParkingSpotNumber) {
+    protected CarParkingSpot(int row, int col, int carParkingSpotNumber) {
         this.row = row;
         this.col = col;
         this.carParkingSpotNumber = carParkingSpotNumber;
@@ -29,7 +29,7 @@ public class CarParkingPlace {
         return carParkingSpotNumber;
     }
 
-    public void setCarParkingSpotNumber(int carParkingSpotNumber) {
+    protected void setCarParkingSpotNumber(int carParkingSpotNumber) {
         this.carParkingSpotNumber = carParkingSpotNumber;
     }
 }

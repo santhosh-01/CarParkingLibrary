@@ -1,4 +1,4 @@
-package model;
+package core;
 
 public enum MoneyType {
     INR,

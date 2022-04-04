@@ -1,4 +1,4 @@
-package model;
+package core;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -6,66 +6,21 @@ import java.util.ArrayList;
 public class ParkingLot {
 
     private final int floorNo;
-    private final int row;
-    private final int col;
+    private final int rows;
+    private final int columns;
     private final ArrayList<ArrayList<Cell>> mat;
     private int vacancy;
-    private final int inBetweenPathWidth;
-    private static int parkingPlaceNumber = 1;
+    private final int pathWidth;
+    private static int parkingSpotNumber = 1;
 
-    public ParkingLot(int floor, int row, int col,int inBetweenPathWidth) {
+    protected ParkingLot(int floor, int row, int col, int pathWidth) {
         vacancy = row * col;
         this.floorNo = floor;
-        this.row = row + (((row - 1)/2)+2) * inBetweenPathWidth;
-        this.col = col + (2 * inBetweenPathWidth);
+        this.rows = row + (((row - 1)/2)+2) * pathWidth;
+        this.columns = col + (2 * pathWidth);
         this.mat = new ArrayList<>();
-        this.inBetweenPathWidth = inBetweenPathWidth;
+        this.pathWidth = pathWidth;
         formatMatrix();
-    }
-
-    private void formatMatrix() {
-        if(inBetweenPathWidth == 1) {
-            for (int i = 0; i < row; ++i)
-            {
-                ArrayList<Cell> cells = new ArrayList<>();
-                for(int j = 0; j < col; ++j)
-                {
-                    if(i == row - 1 || i % 3 == 0 || j == 0 || j == col - 1) {
-                        PathCell pathCell = new PathCell();
-                        cells.add(pathCell);
-                    }
-                    else {
-                        ParkingCell parkingCell = new ParkingCell();
-                        parkingCell.setPosition(parkingPlaceNumber);
-                        parkingPlaceNumber++;
-                        parkingCell.setIsParked("E");
-                        cells.add(parkingCell);
-                    }
-                }
-                this.mat.add(cells);
-            }
-        }
-        else if(inBetweenPathWidth == 2){
-            for (int i = 0; i < row; ++i)
-            {
-                ArrayList<Cell> cells = new ArrayList<>();
-                for(int j = 0; j < col; ++j)
-                {
-                    if(i <= 1 || i >= row - 2 || i % 4 == 0 || i % 4 == 1 || j <= 1 || j >= col - 2) {
-                        PathCell pathCell = new PathCell();
-                        cells.add(pathCell);
-                    }
-                    else {
-                        ParkingCell parkingCell = new ParkingCell();
-                        parkingCell.setPosition(parkingPlaceNumber);
-                        parkingPlaceNumber++;
-                        parkingCell.setIsParked("E");
-                        cells.add(parkingCell);
-                    }
-                }
-                this.mat.add(cells);
-            }
-        }
     }
 
     public int getVacancy() {
@@ -76,41 +31,41 @@ public class ParkingLot {
         return floorNo;
     }
 
-    public int getRow() {
-        return row;
+    public int getRows() {
+        return rows;
     }
 
-    public int getCol() {
-        return col;
+    public int getColumns() {
+        return columns;
     }
 
-    public boolean isParkingFull() {
+    protected boolean isParkingFull() {
         return this.vacancy == 0;
     }
 
-    public int getFirstParkingPosition() {
-        for(int i = 0; i < row; ++i) {
-            for (int j = 0; j < col; ++j) {
+    protected int getFirstParkingSpotNumber() {
+        for(int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
                 if(this.mat.get(i).get(j).getCellValue().equals("-")) {
-                    return mat.get(i).get(j).getPosition();
+                    return ((ParkingCell)mat.get(i).get(j)).getParkingSpotNumber();
                 }
             }
         }
         return -1;
     }
 
-    public CarParkingPlace getNearestParkingPosition(int r, int c) {
-        int[][] ans = new int[row][col];
+    protected CarParkingSpot getNearestParkingSpot(int r, int c) {
+        int[][] ans = new int[rows][columns];
 
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
                 ans[i][j] = Integer.MAX_VALUE;
             }
         }
 
         // For each cell
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
                 ans[i][j] = Math.abs(i - r) + Math.abs(j - c);
             }
         }
@@ -118,12 +73,12 @@ public class ParkingLot {
         int ctr = 0;
         while (true) {
             boolean flag = false;
-            for (int i = 0; i < row; i++) {
-                for (int j = 0; j < col; j++) {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < columns; j++) {
                     if(ans[i][j] == ctr) {
                         flag = true;
                         if (isValidEmptyParkingPlace(i, j)) {
-                            return new CarParkingPlace(i,j);
+                            return new CarParkingSpot(i,j);
                         }
                     }
                 }
@@ -134,100 +89,115 @@ public class ParkingLot {
         return null;
     }
 
-    public CarParkingPlace getCarNumberPosition(String CarNo) {
-        for(int i = 0; i < row; ++i) {
-            for (int j = 0; j < col; ++j) {
+    public CarParkingSpot getCarNumberParkingSpot(String CarNo) {
+        for(int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
                 Car car = null;
                 if(this.mat.get(i).get(j) instanceof ParkingCell) {
                     car = ((ParkingCell)this.mat.get(i).get(j)).getCar();
                 }
                 if(car != null && car.getCarNumber() != null && car.getCarNumber().equals(CarNo)) {
-                    return new CarParkingPlace(i,j);
+                    return new CarParkingSpot(i,j);
                 }
             }
         }
         return null;
     }
 
-    public void showParkingLot(boolean isDescriptionNeeded) {
-        System.out.println();
-        for(int i = 0; i < row; ++i)
+    public String getParkingLotMap(boolean isDescriptionNeeded) {
+        StringBuilder res = new StringBuilder();
+        for(int i = 0; i < rows; ++i)
         {
-            for(int j = 0; j < col; ++j)
+            for(int j = 0; j < columns; ++j)
             {
-                if(mat.get(i).get(j).getCellValue().equals("-") || mat.get(i).get(j).getCellValue().equals("X")) {
-                    System.out.printf("%8s ",mat.get(i).get(j).getCellValue());
-                }
-                else System.out.printf("%8s ",mat.get(i).get(j).getCellValue());
+                res.append(String.format("%8s ", mat.get(i).get(j).getCellValue()));
             }
-            System.out.println();
+            res.append("\n");
         }
         if(isDescriptionNeeded) {
-            System.out.println("\nHere, All Path Cells are represented by 'X'");
-            System.out.println("All Empty Parking Places represented by '-'");
-            System.out.println("Parking Place with Car Parked is represented by CarNumber");
+            res.append("\nHere, All Path Cells are represented by 'X'");
+            res.append("\nAll Empty Parking Places represented by '-'");
+            res.append("\nParking Place with Car Parked is represented by CarNumber");
         }
+        return res.toString();
     }
 
-    public ParkingCell exitACar(CarParkingPlace pos) {
-        ParkingCell parkingCell = ((ParkingCell)mat.get(pos.getRow()).get(pos.getCol()));
-        parkingCell.setCarExitTime(LocalTime.now());
-        ParkingCell parkingCell1 = new ParkingCell(parkingCell);
-        parkingCell.setCar(null);
-        parkingCell.setCellValue("-");
-        parkingCell.setParkedTime(null);
-        parkingCell.setCarExitTime(null);
-        parkingCell.setIsParked("E");
-        this.vacancy ++;
-        return parkingCell1;
-    }
-
-    public void showModifiedParkingLot(boolean isDescriptionNeeded) {
-        System.out.println();
-        for(int i = 0; i < row; ++i)
+    public String getModifiedParkingLotMap(boolean isDescriptionNeeded) {
+        StringBuilder res = new StringBuilder();
+        for(int i = 0; i < rows; ++i)
         {
-            for(int j = 0; j < col; ++j)
+            for(int j = 0; j < columns; ++j)
             {
                 if(mat.get(i).get(j).getCellValue().equals("X")) {
-                    System.out.printf("%8s ",mat.get(i).get(j).getCellValue());
+                    res.append(String.format("%8s ", mat.get(i).get(j).getCellValue()));
                 }
-                else System.out.printf("%8s ",mat.get(i).get(j).getPosition() + "-" +
-                        ((ParkingCell)mat.get(i).get(j)).getIsParked());
+                else
+                    res.append(String.format("%8s ", ((ParkingCell) mat.get(i).get(j)).getParkingSpotNumber() + "-" +
+                            ((ParkingCell) mat.get(i).get(j)).getIsParked()));
             }
-            System.out.println();
+            res.append("\n");
         }
         if(isDescriptionNeeded) {
-            System.out.println("\nHere, All Path Cells are represented by 'X'");
-            System.out.println("All Parking Places represented by [ParkingSpotNumber-E] or [ParkingSpotNumber-P]");
-            System.out.println("ParkingSpotNumber is the Number to represent the parking place");
-            System.out.println("E stands for Empty, P stands for Parked");
+            res.append("\nHere, All Path Cells are represented by 'X'");
+            res.append("\nAll Parking Places represented by [ParkingSpotNumber-E] or [ParkingSpotNumber-P]");
+            res.append("\nParkingSpotNumber is the Number to represent the parking place");
+            res.append("\nE stands for Empty, P stands for Parked");
         }
+        return res.toString();
     }
 
-    public void showDetailedPath() {
-        System.out.println();
-        for(int i = 0; i < row; ++i)
+    protected String getDetailedPath() {
+        StringBuilder res = new StringBuilder();
+        for(int i = 0; i < rows; ++i)
         {
-            for(int j = 0; j < col; ++j)
+            for(int j = 0; j < columns; ++j)
             {
                 if(mat.get(i).get(j).getCellValue().equals("X")) {
-                    System.out.printf("%8s ", mat.get(i).get(j).getCellValue() +
-                            ((PathCell)mat.get(i).get(j)).getDirection());
+                    res.append(String.format("%8s ", mat.get(i).get(j).getCellValue() +
+                            ((PathCell) mat.get(i).get(j)).getDirection()));
                 }
                 else {
-                    System.out.printf("%8s ", mat.get(i).get(j).getCellValue());
+                    res.append(String.format("%8s ", mat.get(i).get(j).getCellValue()));
                 }
             }
-            System.out.println();
+            res.append("\n");
         }
-        System.out.println("\nHere, Car path represented by X{D}");
-        System.out.println("D represents Direction that the car can travel to reach parking place");
+        res.append("\nHere, Car path represented by X{D}");
+        res.append("\nD represents Direction that the car can travel to reach parking place");
+        return res.toString();
     }
 
-    public void setDetailedLeftEntryPath(int r, int c) {
+    public ParkingCell getParkingCellByPosition(int r, int c) {
+        return (ParkingCell) mat.get(r).get(c);
+    }
+
+    protected CarParkingSpot getCarLocation(int carParkingNumber) {
+        for(int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                Cell cell = mat.get(i).get(j);
+                if(cell instanceof ParkingCell) {
+                    if(((ParkingCell)cell).getParkingSpotNumber() == carParkingNumber) {
+                        return new CarParkingSpot(i,j);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    protected boolean isRowAndColumnInRange(int r, int c) {
+        return ((r >= 0 && r < rows) && (c >= 0 && c < columns));
+    }
+
+    protected boolean isValidEmptyParkingPlace(int r, int c) {
+        return (isRowAndColumnInRange(r,c) &&
+                mat.get(r).get(c).getCellValue().equals("-"));
+    }
+
+    protected void setDetailedLeftEntryPath(int r, int c) {
         if(mat.get(r+1).get(c).getCellValue().equals("X")) {
             int j = 0;
-            for(int i = row - 1; i > r+1; --i) {
+            for(int i = rows - 1; i > r+1; --i) {
                 if (mat.get(i).get(j) instanceof PathCell) {
                     ((PathCell) mat.get(i).get(j)).setDirection("{^}");
                 }
@@ -242,10 +212,10 @@ public class ParkingLot {
             }
         }
         else {
-            int i = row - (inBetweenPathWidth);
-            int j = col - (inBetweenPathWidth);
-            if(mat.get(row - 1).get(0) instanceof  PathCell) {
-                ((PathCell)mat.get(row - 1).get(0)).setDirection("{^}");
+            int i = rows - (pathWidth);
+            int j = columns - (pathWidth);
+            if(mat.get(rows - 1).get(0) instanceof  PathCell) {
+                ((PathCell)mat.get(rows - 1).get(0)).setDirection("{^}");
             }
             for(int j1 = 0 ; j1 < j ; ++j1) {
                 if(mat.get(i).get(j1) instanceof  PathCell) {
@@ -268,10 +238,10 @@ public class ParkingLot {
         }
     }
 
-    public void setDetailedEntryPath(int r, int c) {
-        int j = inBetweenPathWidth - 1;
+    protected void setDetailedEntryPath(int r, int c) {
+        int j = pathWidth - 1;
         if(mat.get(r-1).get(c).getCellValue().equals("X")) {
-            for(int i = row - 1; i >= r; --i) {
+            for(int i = rows - 1; i >= r; --i) {
                 if (mat.get(i).get(j) instanceof PathCell) {
                     ((PathCell) mat.get(i).get(j)).setDirection("{^}");
                 }
@@ -286,8 +256,8 @@ public class ParkingLot {
             }
         }
         else {
-            int to = col - (inBetweenPathWidth);
-            for(int i = row - 1; i >= r - 1; --i) {
+            int to = columns - (pathWidth);
+            for(int i = rows - 1; i >= r - 1; --i) {
                 if (mat.get(i).get(j) instanceof PathCell) {
                     ((PathCell) mat.get(i).get(j)).setDirection("{^}");
                 }
@@ -313,9 +283,9 @@ public class ParkingLot {
         }
     }
 
-    public void setDetailedLeftExitPath(int r, int c) {
-        int j = inBetweenPathWidth - 1;
-        int jj = col - (inBetweenPathWidth);
+    protected void setDetailedLeftExitPath(int r, int c) {
+        int j = pathWidth - 1;
+        int jj = columns - (pathWidth);
         if(mat.get(r+1).get(c).getCellValue().equals("X")) {
             int i = r - 2;
             if(mat.get(r-1).get(c).getCellValue().equals("X")) i = r - 1;
@@ -334,7 +304,7 @@ public class ParkingLot {
                     ((PathCell)mat.get(i).get(j1)).setDirection("{<}");
                 }
             }
-            for(int i1 = i; i1 < row; ++i1) {
+            for(int i1 = i; i1 < rows; ++i1) {
                 if(mat.get(i1).get(j) instanceof PathCell) {
                     ((PathCell)mat.get(i1).get(j)).setDirection("{v}");
                 }
@@ -346,7 +316,7 @@ public class ParkingLot {
                     ((PathCell)mat.get(r-1).get(j1)).setDirection("{<}");
                 }
             }
-            for(int i1 = r - 1; i1 < row; ++i1) {
+            for(int i1 = r - 1; i1 < rows; ++i1) {
                 if(mat.get(i1).get(j) instanceof PathCell) {
                     ((PathCell)mat.get(i1).get(j)).setDirection("{v}");
                 }
@@ -354,9 +324,9 @@ public class ParkingLot {
         }
     }
 
-    public void setDetailedExitPath(int r, int c) {
-        int i = row - (inBetweenPathWidth);
-        int j = col - (inBetweenPathWidth);
+    protected void setDetailedExitPath(int r, int c) {
+        int i = rows - (pathWidth);
+        int j = columns - (pathWidth);
         if(mat.get(r-1).get(c).getCellValue().equals("X")) {
             for(int j1 = c; j1 < j; ++j1) {
                 if(mat.get(r - 1).get(j1) instanceof  PathCell) {
@@ -373,7 +343,7 @@ public class ParkingLot {
                     ((PathCell)mat.get(i).get(j1)).setDirection("{<}");
                 }
             }
-            for(int i1 = i; i1 < row; ++i1) {
+            for(int i1 = i; i1 < rows; ++i1) {
                 if(mat.get(i1).get(0) instanceof  PathCell) {
                     ((PathCell)mat.get(i1).get(0)).setDirection("{v}");
                 }
@@ -385,7 +355,7 @@ public class ParkingLot {
                     ((PathCell)mat.get(r+1).get(j1)).setDirection("{<}");
                 }
             }
-            for(int i1 = r + 1; i1 < row; ++i1) {
+            for(int i1 = r + 1; i1 < rows; ++i1) {
                 if(mat.get(i1).get(0) instanceof PathCell) {
                     ((PathCell)mat.get(i1).get(0)).setDirection("{v}");
                 }
@@ -393,7 +363,7 @@ public class ParkingLot {
         }
     }
 
-    public void parkCarAtPosition(Car car, int r, int c) {
+    protected void parkCarAtPosition(Car car, int r, int c) {
         if(!isValidEmptyParkingPlace(r,c)) return;
         if(mat.get(r).get(c) instanceof ParkingCell) {
             ((ParkingCell)mat.get(r).get(c)).setCar(car);
@@ -403,9 +373,22 @@ public class ParkingLot {
         this.vacancy --;
     }
 
-    public void removeDirections() {
-        for(int i = 0; i < row; ++i) {
-            for (int j = 0; j < col; ++j) {
+    protected ParkingCell exitACar(CarParkingSpot pos) {
+        ParkingCell parkingCell = ((ParkingCell)mat.get(pos.getRow()).get(pos.getCol()));
+        parkingCell.setCarExitTime(LocalTime.now());
+        ParkingCell parkingCell1 = new ParkingCell(parkingCell);
+        parkingCell.setCar(null);
+        parkingCell.setCellValue("-");
+        parkingCell.setParkedTime(null);
+        parkingCell.setCarExitTime(null);
+        parkingCell.setIsParked("E");
+        this.vacancy ++;
+        return parkingCell1;
+    }
+
+    protected void removeDirections() {
+        for(int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
                 if(mat.get(i).get(j) instanceof PathCell) {
                     ((PathCell)mat.get(i).get(j)).setDirection("");
                 }
@@ -413,28 +396,46 @@ public class ParkingLot {
         }
     }
 
-    public ParkingCell getParkingCellByPosition(int r, int c) {
-        return (ParkingCell) mat.get(r).get(c);
-    }
-
-    public boolean isRowAndColumnInRange(int r, int c) {
-        return ((r >= 0 && r < row) && (c >= 0 && c < col));
-    }
-
-    public boolean isValidEmptyParkingPlace(int r, int c) {
-        return (isRowAndColumnInRange(r,c) &&
-                mat.get(r).get(c).getCellValue().equals("-"));
-    }
-
-    public CarLocation getCarLocation(int carParkingNumber) {
-        for(int i = 0; i < row; ++i) {
-            for (int j = 0; j < col; ++j) {
-                Cell cell = mat.get(i).get(j);
-                if(cell.getPosition() == carParkingNumber) {
-                    return new CarLocation(i,j,mat.get(i).get(j).getPosition(),floorNo);
+    private void formatMatrix() {
+        if(pathWidth == 1) {
+            for (int i = 0; i < rows; ++i)
+            {
+                ArrayList<Cell> cells = new ArrayList<>();
+                for(int j = 0; j < columns; ++j)
+                {
+                    if(i == rows - 1 || i % 3 == 0 || j == 0 || j == columns - 1) {
+                        PathCell pathCell = new PathCell();
+                        cells.add(pathCell);
+                    }
+                    else {
+                        ParkingCell parkingCell = new ParkingCell(parkingSpotNumber);
+                        parkingSpotNumber++;
+                        parkingCell.setIsParked("E");
+                        cells.add(parkingCell);
+                    }
                 }
+                this.mat.add(cells);
             }
         }
-        return null;
+        else if(pathWidth == 2){
+            for (int i = 0; i < rows; ++i)
+            {
+                ArrayList<Cell> cells = new ArrayList<>();
+                for(int j = 0; j < columns; ++j)
+                {
+                    if(i <= 1 || i >= rows - 2 || i % 4 == 0 || i % 4 == 1 || j <= 1 || j >= columns - 2) {
+                        PathCell pathCell = new PathCell();
+                        cells.add(pathCell);
+                    }
+                    else {
+                        ParkingCell parkingCell = new ParkingCell(parkingSpotNumber);
+                        parkingSpotNumber++;
+                        parkingCell.setIsParked("E");
+                        cells.add(parkingCell);
+                    }
+                }
+                this.mat.add(cells);
+            }
+        }
     }
 }

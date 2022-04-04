@@ -1,5 +1,6 @@
-package util;
+package core;
 
+// Utility Class
 public class Validator {
 
     private Validator() {
