@@ -3,6 +3,7 @@ package core;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
+// Model Class
 public class BillingSystem {
 
     private static final double DEFAULT_BILLING_AMOUNT = 100.0;

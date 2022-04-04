@@ -2,6 +2,7 @@ package core;
 
 import java.time.LocalTime;
 
+// Utility Class
 public class TimeFormat {
 
     private TimeFormat() {

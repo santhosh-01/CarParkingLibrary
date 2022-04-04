@@ -2,6 +2,7 @@ package core;
 
 import java.util.ArrayList;
 
+// Model Class
 public class CarEntryExitMaster {
 
     private final String carNumber;

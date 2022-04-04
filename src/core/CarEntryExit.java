@@ -2,6 +2,7 @@ package core;
 
 import java.time.LocalTime;
 
+// Model Class
 public class CarEntryExit {
 
     private final LocalTime entryTime;

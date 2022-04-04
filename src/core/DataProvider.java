@@ -1,5 +1,6 @@
 package core;
 
+// Interface to scan/read at Client Side
 public interface DataProvider {
 
     boolean billingAmountAcceptance(double billingAmountPerHour, String moneyAbbr);

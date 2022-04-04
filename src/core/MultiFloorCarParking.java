@@ -2,6 +2,7 @@ package core;
 
 import java.util.ArrayList;
 
+// Model Class
 public class MultiFloorCarParking {
 
     private final int floors, rows, columns, pathWidth;

@@ -1,5 +1,6 @@
 package core;
 
+// Model Class
 public class CarParkingSpot {
 
     private final int row;

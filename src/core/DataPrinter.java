@@ -3,6 +3,7 @@ package core;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+// Interface to print at Client Side
 public interface DataPrinter {
 
     void carDetailsConfirmation(String carInfoUpdateMenu);

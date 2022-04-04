@@ -1,5 +1,6 @@
 package core;
 
+// Implementation Class
 public class CarExit {
 
     public ParkingCell exitACarFromPosition(CarInParking carInParking, ParkingLot parkingLot, CarParkingSpot pos, Car car) {

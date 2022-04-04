@@ -1,5 +1,6 @@
 package core;
 
+// Model Class
 public class Cell {
 
     private String cellValue;

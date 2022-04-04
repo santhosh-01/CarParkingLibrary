@@ -3,6 +3,7 @@ package core;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+// Implementation Class
 public class ParkingHistory {
 
     private final CarTable carTable;

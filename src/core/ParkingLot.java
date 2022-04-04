@@ -3,6 +3,7 @@ package core;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+// Model Class
 public class ParkingLot {
 
     private final int floorNo;

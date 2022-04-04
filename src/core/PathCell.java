@@ -1,5 +1,6 @@
 package core;
 
+// Model Class
 public class PathCell extends Cell{
 
     private String direction;

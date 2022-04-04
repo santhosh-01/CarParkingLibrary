@@ -1,5 +1,6 @@
 package core;
 
+// Model Class
 public class CarLocation {
 
     private final CarParkingSpot carParkingSpot;

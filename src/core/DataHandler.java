@@ -1,7 +1,6 @@
 package core;
 
-import java.util.ArrayList;
-
+// Input Data Handler Class
 public class DataHandler {
 
     private final MultiFloorCarParking obj;

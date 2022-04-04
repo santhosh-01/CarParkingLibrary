@@ -1,5 +1,6 @@
 package core;
 
+// Data Class
 public class AppData {
 
     private final int floors;

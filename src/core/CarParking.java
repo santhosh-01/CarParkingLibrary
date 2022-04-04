@@ -2,6 +2,7 @@ package core;
 
 import java.util.ArrayList;
 
+// Implementation Class
 public class CarParking {
 
     private final MultiFloorCarParking obj;

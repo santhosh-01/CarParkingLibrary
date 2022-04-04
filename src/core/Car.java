@@ -1,5 +1,6 @@
 package core;
 
+// Model Class
 public class Car {
 
     private String carNumber;
