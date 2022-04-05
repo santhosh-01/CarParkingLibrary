@@ -6,11 +6,10 @@ import java.time.temporal.ChronoUnit;
 // Model Class
 public class BillingSystem {
 
-    private static final double DEFAULT_BILLING_AMOUNT = 100.0;
     private LocalTime carEntryTime;
     private LocalTime carExitTime;
     private static MoneyType moneyType;
-    private static double billingAmountPerHour = DEFAULT_BILLING_AMOUNT;
+    private static double billingAmountPerHour;
     private static String moneyAbbr;
     private double bill;
 
