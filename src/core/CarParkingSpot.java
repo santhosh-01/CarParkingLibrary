@@ -8,8 +8,7 @@ public class CarParkingSpot {
     private int carParkingSpotNumber;
 
     protected CarParkingSpot(int row, int col) {
-        this.row = row;
-        this.col = col;
+        this(row, col, -1);
     }
 
     protected CarParkingSpot(int row, int col, int carParkingSpotNumber) {
